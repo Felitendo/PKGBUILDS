@@ -50,5 +50,5 @@ jobs:
         env:
           AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           AUR_GIT_NAME: ${{ vars.AUR_GIT_NAME }}
-          AUR_GIT_EMAIL: ${{ vars.AUR_GIT_EMAIL }}
+          AUR_GIT_EMAIL: ${{ secrets.AUR_GIT_EMAIL }}
         run: bash scripts/update-package.sh "${{ matrix.package }}"

@@ -31,9 +31,9 @@ users don't need any build dependencies.
 2. Add the matching **private** key as a repository secret named
    `AUR_SSH_PRIVATE_KEY`
    (Settings → Secrets and variables → Actions → New repository secret).
-3. Optionally set the repository **variables** `AUR_GIT_NAME` and
-   `AUR_GIT_EMAIL` to control the commit identity used on the AUR
-   (defaults: `Felitendo` / `95575686+Felitendo@users.noreply.github.com`).
+3. Optionally set the repository variable `AUR_GIT_NAME` and the repository
+   **secret** `AUR_GIT_EMAIL` to control the commit identity used on the AUR
+   (defaults: `Felitendo` / the maintainer's GitHub noreply address).
 
 The first push to `ssh://aur@aur.archlinux.org/<pkgname>.git` creates the AUR
 package automatically.
