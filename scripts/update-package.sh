@@ -17,6 +17,12 @@ repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$repo_root"
 pkg="${pkg%/}"
 
+# In the CI container the checkout is owned by a different uid than root;
+# git (also invoked internally by gh) refuses to touch it without this.
+if [[ "${CI:-}" == "true" ]]; then
+  git config --global --add safe.directory "$repo_root"
+fi
+
 source "$pkg/pkg.sh"
 
 ver="$(latest_version || true)"
@@ -86,7 +92,6 @@ rm -f "$pkg/$asset" "$pkg"/*.pkg.tar.*
 ### 4: commit back to this repository ########################################
 
 if [[ "${CI:-}" == "true" ]]; then
-  git config --global --add safe.directory "$repo_root"
   git config user.name "github-actions[bot]"
   git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
