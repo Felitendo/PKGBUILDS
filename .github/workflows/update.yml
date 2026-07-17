@@ -1,0 +1,55 @@
+name: Update AUR packages
+
+on:
+  schedule:
+    # every 6 hours (offset from the full hour to avoid GitHub's load spikes)
+    - cron: '37 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '*/PKGBUILD'
+      - '*/pkg.sh'
+      - 'scripts/**'
+      - '.github/workflows/update.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.list.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: |
+          echo "packages=$(ls -d */PKGBUILD 2>/dev/null | xargs -r -n1 dirname | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
+
+  update:
+    needs: discover
+    if: needs.discover.outputs.packages != '[]'
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
+    strategy:
+      fail-fast: false
+      # serialize so parallel jobs don't race on pushing to this repository
+      max-parallel: 1
+      matrix:
+        package: ${{ fromJson(needs.discover.outputs.packages) }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Install base tooling
+        run: pacman -Syu --noconfirm --needed git openssh github-cli jq zstd
+
+      - uses: actions/checkout@v4
+
+      - name: Update ${{ matrix.package }}
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          AUR_GIT_NAME: ${{ vars.AUR_GIT_NAME }}
+          AUR_GIT_EMAIL: ${{ vars.AUR_GIT_EMAIL }}
+        run: bash scripts/update-package.sh "${{ matrix.package }}"
