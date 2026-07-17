@@ -113,18 +113,16 @@ if [[ -z "${AUR_SSH_PRIVATE_KEY:-}" ]]; then
   exit 1
 fi
 
-mkdir -p ~/.ssh && chmod 700 ~/.ssh
-printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur_key
-chmod 600 ~/.ssh/aur_key
-cat >> ~/.ssh/config <<'EOF'
-Host aur.archlinux.org
-  User aur
-  IdentityFile ~/.ssh/aur_key
-  IdentitiesOnly yes
-EOF
+# Pass the key and known_hosts explicitly instead of via ~/.ssh: in the CI
+# container $HOME and the passwd home directory disagree, and ssh resolves
+# "~" through the latter, silently ignoring anything written to $HOME/.ssh.
+sshdir="$(mktemp -d)"
+printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > "$sshdir/key"
+chmod 600 "$sshdir/key"
 # Pinned host key, see https://aur.archlinux.org
 echo 'aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuBKrPzbawxA/k2g6NcyV5jmqwJ2s+zpgZGZ7tpLIcN' \
-  >> ~/.ssh/known_hosts
+  > "$sshdir/known_hosts"
+export GIT_SSH_COMMAND="ssh -i $sshdir/key -o UserKnownHostsFile=$sshdir/known_hosts -o IdentitiesOnly=yes"
 
 aurdir="$(mktemp -d)"
 git clone "ssh://aur@aur.archlinux.org/$pkg.git" "$aurdir"
