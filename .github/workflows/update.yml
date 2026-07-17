@@ -8,9 +8,8 @@ on:
   push:
     branches: [main]
     paths:
-      - '*/PKGBUILD'
-      - '*/pkg.sh'
-      - 'scripts/**'
+      # any package file (PKGBUILD, pkg.sh, .desktop, ...) and the shared script
+      - '*/*'
       - '.github/workflows/update.yml'
 
 permissions:

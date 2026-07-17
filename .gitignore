@@ -1,5 +1,6 @@
 # makepkg build leftovers and downloaded/built artifacts
 *.tar.zst
+*.tar.gz
 *.pkg.tar.*
 */src/
 */pkg/

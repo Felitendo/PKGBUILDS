@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 # Update one package directory:
 #   1. determine the latest upstream version (pkg.sh: latest_version)
-#   2. build the binary artifact if the matching GitHub release asset is
-#      missing (pkg.sh: build_artifact), otherwise reuse the published one
-#   3. refresh PKGBUILD (pkgver/pkgrel/sha256sums), test-build it with
-#      makepkg and regenerate .SRCINFO
-#   4. commit changes back to this repository
-#   5. push PKGBUILD + .SRCINFO to the AUR
+#   2. bring the PKGBUILD up to date:
+#      - packages we build ourselves (pkg.sh defines build_artifact): make
+#        sure the GitHub release asset for that version exists - building and
+#        uploading it if necessary - and sync pkgver/sha256sums with it
+#      - packages prebuilt by upstream (no build_artifact): on a new version,
+#        set pkgver and let pkg.sh's refresh_checksums update the sums
+#   3. if the PKGBUILD changed: set pkgrel and run a makepkg test build
+#   4. regenerate .SRCINFO and commit changes back to this repository
+#   5. push the package files to the AUR if it differs
 #
 # Requires: GH_TOKEN (GitHub release + repo push), AUR_SSH_PRIVATE_KEY.
 # Optional: AUR_GIT_NAME / AUR_GIT_EMAIL for the AUR commit identity.
@@ -23,6 +26,7 @@ if [[ "${CI:-}" == "true" ]]; then
   git config --global --add safe.directory "$repo_root"
 fi
 
+BUILD_DEPS=()
 source "$pkg/pkg.sh"
 
 ver="$(latest_version || true)"
@@ -34,60 +38,81 @@ echo "$pkg: latest upstream version is $ver"
 
 oldver="$(grep -Po '^pkgver=\K.*' "$pkg/PKGBUILD")"
 oldrel="$(grep -Po '^pkgrel=\K.*' "$pkg/PKGBUILD")"
-oldsha="$(grep -Po "^sha256sums=\('\K[0-9a-f]{64}" "$pkg/PKGBUILD" || true)"
 
-tag="$pkg-$ver"
-asset="$pkg-$ver.tar.zst"
+### 2: bring the PKGBUILD up to date ########################################
 
-### 1+2: make sure the release asset exists, get a local copy of it #########
+if declare -f build_artifact >/dev/null; then
+  # We build the binary artifact and host it as a GitHub release asset.
+  tag="$pkg-$ver"
+  asset="$pkg-$ver.tar.zst"
 
-if gh release view "$tag" --json assets -q '.assets[].name' 2>/dev/null | grep -qxF "$asset"; then
-  echo "$pkg: release $tag already contains $asset - reusing it"
-  gh release download "$tag" --pattern "$asset" --dir "$pkg" --clobber
-else
-  echo "$pkg: building $asset"
-  if [[ "${CI:-}" == "true" && "${#BUILD_DEPS[@]}" -gt 0 ]]; then
-    pacman -S --noconfirm --needed "${BUILD_DEPS[@]}"
+  if gh release view "$tag" --json assets -q '.assets[].name' 2>/dev/null | grep -qxF "$asset"; then
+    echo "$pkg: release $tag already contains $asset - reusing it"
+    gh release download "$tag" --pattern "$asset" --dir "$pkg" --clobber
+  else
+    echo "$pkg: building $asset"
+    if [[ "${CI:-}" == "true" && "${#BUILD_DEPS[@]}" -gt 0 ]]; then
+      pacman -S --noconfirm --needed "${BUILD_DEPS[@]}"
+    fi
+    build_artifact "$ver" "$repo_root/$pkg/$asset"
+    gh release view "$tag" >/dev/null 2>&1 || \
+      gh release create "$tag" --title "$tag" \
+        --notes "Automated build of $pkg $ver (upstream: ${UPSTREAM_REPO:-unknown})."
+    gh release upload "$tag" "$pkg/$asset" --clobber
   fi
-  build_artifact "$ver" "$repo_root/$pkg/$asset"
-  gh release view "$tag" >/dev/null 2>&1 || \
-    gh release create "$tag" --title "$tag" \
-      --notes "Automated build of $pkg $ver (upstream: ${UPSTREAM_REPO:-unknown})."
-  gh release upload "$tag" "$pkg/$asset" --clobber
+
+  sha="$(sha256sum "$pkg/$asset" | cut -d' ' -f1)"
+  sed -i \
+    -e "s|^pkgver=.*|pkgver=$ver|" \
+    -e "s|^sha256sums=.*|sha256sums=('$sha')|" \
+    "$pkg/PKGBUILD"
+else
+  # Upstream publishes the binaries itself; only refresh version + checksums.
+  if [[ "$ver" != "$oldver" ]]; then
+    sed -i "s|^pkgver=.*|pkgver=$ver|" "$pkg/PKGBUILD"
+    refresh_checksums "$ver" "$pkg/PKGBUILD"
+  else
+    echo "$pkg: $ver is current"
+  fi
 fi
 
-sha="$(sha256sum "$pkg/$asset" | cut -d' ' -f1)"
+### 3: pkgrel + test build if the PKGBUILD changed ##########################
 
-### 3: refresh PKGBUILD, test-build, regenerate .SRCINFO ####################
+# makepkg refuses to run as root (the CI container), so hand it to an
+# unprivileged user there.
+run_makepkg() {
+  if [[ "$EUID" -eq 0 ]]; then
+    useradd -m builder 2>/dev/null || true
+    chown -R builder "$pkg"
+    (cd "$pkg" && runuser -u builder -- makepkg "$@")
+  else
+    (cd "$pkg" && makepkg "$@")
+  fi
+}
 
-if [[ "$ver" != "$oldver" ]]; then
-  rel=1
-elif [[ "$sha" != "$oldsha" ]]; then
-  rel=$((oldrel + 1))
-else
+if git diff --quiet -- "$pkg/PKGBUILD"; then
   rel="$oldrel"
-fi
-
-sed -i \
-  -e "s|^pkgver=.*|pkgver=$ver|" \
-  -e "s|^pkgrel=.*|pkgrel=$rel|" \
-  -e "s|^sha256sums=.*|sha256sums=('$sha')|" \
-  "$pkg/PKGBUILD"
-
-# makepkg refuses to run as root (the CI container), so hand the build to an
-# unprivileged user there. -d: the runner only needs to package, not run.
-if [[ "$EUID" -eq 0 ]]; then
-  useradd -m builder 2>/dev/null || true
-  chown -R builder "$pkg"
-  (cd "$pkg" && runuser -u builder -- makepkg -fdc)
-  (cd "$pkg" && runuser -u builder -- makepkg --printsrcinfo > .SRCINFO)
-  chown -R 0:0 "$pkg"
 else
-  (cd "$pkg" && makepkg -fdc)
-  (cd "$pkg" && makepkg --printsrcinfo > .SRCINFO)
+  if [[ "$ver" != "$oldver" ]]; then
+    rel=1
+  else
+    rel=$((oldrel + 1))
+  fi
+  sed -i "s|^pkgrel=.*|pkgrel=$rel|" "$pkg/PKGBUILD"
+
+  # -d: the runner only needs to package, not run the result
+  run_makepkg -fdc
+  echo "$pkg: makepkg test build succeeded"
 fi
-echo "$pkg: makepkg test build succeeded"
-rm -f "$pkg/$asset" "$pkg"/*.pkg.tar.*
+
+# .SRCINFO regeneration is cheap - do it every run so it can never go stale
+run_makepkg --printsrcinfo > "$pkg/.SRCINFO.new"
+mv "$pkg/.SRCINFO.new" "$pkg/.SRCINFO"
+[[ "$EUID" -eq 0 ]] && chown -R 0:0 "$pkg"
+
+# drop downloaded sources and build leftovers (all gitignored, never tracked)
+rm -rf "$pkg/src" "$pkg/pkg"
+rm -f "$pkg"/*.pkg.tar.* "$pkg"/*.tar.zst "$pkg"/*.tar.gz
 
 ### 4: commit back to this repository ########################################
 
@@ -126,12 +151,18 @@ export GIT_SSH_COMMAND="ssh -i $sshdir/key -o UserKnownHostsFile=$sshdir/known_h
 
 aurdir="$(mktemp -d)"
 git clone "ssh://aur@aur.archlinux.org/$pkg.git" "$aurdir"
-cp "$pkg/PKGBUILD" "$pkg/.SRCINFO" "$aurdir/"
+
+# every tracked file of the package except our automation glue belongs on
+# the AUR (PKGBUILD, .SRCINFO, .desktop files, .install files, ...)
+while IFS= read -r f; do
+  [[ "$(basename "$f")" == "pkg.sh" ]] && continue
+  cp "$f" "$aurdir/"
+done < <(git ls-files "$pkg")
 
 cd "$aurdir"
 git config user.name "${AUR_GIT_NAME:-Felitendo}"
 git config user.email "${AUR_GIT_EMAIL:-95575686+Felitendo@users.noreply.github.com}"
-git add PKGBUILD .SRCINFO
+git add -A
 if git diff --cached --quiet && [[ -n "$(git ls-remote origin)" ]]; then
   echo "$pkg: AUR package is already up to date"
 else

@@ -22,6 +22,7 @@ users don't need any build dependencies.
 | Package | Upstream | AUR |
 |---|---|---|
 | `timetable-bin` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis) — "Timetable", a GTK4 + LibAdwaita client for WebUntis | [timetable-bin](https://aur.archlinux.org/packages/timetable-bin) |
+| `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
 
 ## Setup (one-time)
 
@@ -44,12 +45,21 @@ Create a new directory named after the AUR package containing:
 - **`PKGBUILD`** — sources the prebuilt asset from
   `https://github.com/Felitendo/PKGBUILDS/releases/download/<pkgname>-<pkgver>/<pkgname>-<pkgver>.tar.zst`.
   `pkgver`, `pkgrel` and `sha256sums` are maintained by CI.
-- **`pkg.sh`** — bash sourced by [scripts/update-package.sh](scripts/update-package.sh),
-  providing:
-  - `BUILD_DEPS` — array of Arch packages installed before building,
-  - `latest_version` — prints the latest upstream version (no `v` prefix),
-  - `build_artifact <version> <output-file>` — downloads/builds upstream and
-    writes the install tree (a tarball containing `usr/`) to `<output-file>`.
+- **`pkg.sh`** — bash sourced by [scripts/update-package.sh](scripts/update-package.sh).
+  Always provides `latest_version` (prints the latest upstream version, no
+  `v` prefix), plus one of two modes:
+  - *upstream has no binaries* (e.g. `timetable-bin`): define
+    `build_artifact <version> <output-file>` (build upstream and write the
+    install tree as a tarball containing `usr/`) and `BUILD_DEPS` (array of
+    Arch packages needed to build). CI hosts the result as a GitHub release
+    asset which the PKGBUILD downloads.
+  - *upstream hosts binaries* (e.g. `fluxer-bin`): define
+    `refresh_checksums <version> <pkgbuild-path>` which updates the
+    `sha256sums*` lines for the new version. The PKGBUILD sources upstream
+    URLs directly and nothing is hosted here.
+
+  Other local source files in the directory (`.desktop` files, etc.) are
+  pushed to the AUR alongside `PKGBUILD` and `.SRCINFO`.
 
 The workflow discovers package directories automatically. Trigger a run
 manually via *Actions → Update AUR packages → Run workflow* to publish it
