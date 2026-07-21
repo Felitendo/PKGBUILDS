@@ -11,8 +11,9 @@ package's upstream for a new release. When one is found it:
    release of **this** repository (tag `<pkgname>-<version>`),
 3. updates the `PKGBUILD` (pkgver/pkgrel/sha256sums), test-builds it with
    `makepkg` and regenerates `.SRCINFO`,
-4. commits the changes back to this repository, and
-5. pushes `PKGBUILD` + `.SRCINFO` to the AUR.
+4. commits the changes back to this repository,
+5. pushes `PKGBUILD` + `.SRCINFO` to the AUR, and
+6. deletes the package's superseded releases (older versions, tag included).
 
 The AUR packages themselves only download the prebuilt asset from step 2, so
 users don't need any build dependencies.

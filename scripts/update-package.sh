@@ -170,3 +170,22 @@ else
   git push origin HEAD:master
   echo "$pkg: pushed $ver-$rel to the AUR"
 fi
+
+### 6: prune superseded GitHub releases ######################################
+
+# Build-mode packages get one release per version; once a newer version is
+# fully published (asset built, PKGBUILD updated, AUR pushed - i.e. we got
+# this far) the older releases are no longer referenced by anything, so drop
+# them together with their tags. Runs every time to also catch leftovers.
+cd "$repo_root"
+if declare -f build_artifact >/dev/null; then
+  while IFS= read -r tag; do
+    [[ "$tag" == "$pkg-$ver" ]] && continue
+    rest="${tag#"$pkg-"}"
+    # only this package's tags: "<pkg>-<version>" (a pkgver never contains
+    # "-", which also keeps prefix-sharing package names apart)
+    [[ "$tag" == "$pkg-"* && "$rest" != *-* ]] || continue
+    echo "$pkg: deleting superseded release $tag"
+    gh release delete "$tag" --cleanup-tag --yes
+  done < <(gh release list --limit 100 --json tagName -q '.[].tagName')
+fi
