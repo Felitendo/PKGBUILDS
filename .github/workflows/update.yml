@@ -12,6 +12,13 @@ on:
       - '*/*'
       - '.github/workflows/update.yml'
 
+# Never run twice at once: concurrent runs race on pushing to this repository
+# and to the AUR (e.g. a push-triggered run and a manual dispatch both creating
+# a new AUR repo). Queue instead of cancelling so every trigger still lands.
+concurrency:
+  group: aur-update
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
