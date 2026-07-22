@@ -25,6 +25,7 @@ users don't need any build dependencies.
 | `timetable-bin` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis) — "Timetable", a GTK4 + LibAdwaita client for WebUntis | [timetable-bin](https://aur.archlinux.org/packages/timetable-bin) |
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
 | `chromium-widevine-helper-bin` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | [chromium-widevine-helper-bin](https://aur.archlinux.org/packages/chromium-widevine-helper-bin) |
+| `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
 
 ## Setup (one-time)
 
