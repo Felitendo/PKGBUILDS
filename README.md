@@ -26,6 +26,7 @@ users don't need any build dependencies.
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
 | `chromium-widevine-helper-bin` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | [chromium-widevine-helper-bin](https://aur.archlinux.org/packages/chromium-widevine-helper-bin) |
 | `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
+| `thonny-bin` | [thonny/thonny](https://github.com/thonny/thonny) — Python IDE for beginners (bundles a standalone CPython + tcl/tk) | [thonny-bin](https://aur.archlinux.org/packages/thonny-bin) |
 
 ## Setup (one-time)
 
