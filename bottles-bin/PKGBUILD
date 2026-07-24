@@ -3,7 +3,7 @@
 # https://github.com/Felitendo/PKGBUILDS
 
 pkgname=bottles-bin
-pkgver=0
+pkgver=64.1
 pkgrel=1
 pkgdesc="Easily manage wine and proton prefixes (prebuilt)"
 arch=('any')
@@ -27,7 +27,7 @@ optdepends=('vulkan-tools: vkcube test / Vulkan info'
 provides=('bottles')
 conflicts=('bottles')
 source=("https://github.com/Felitendo/PKGBUILDS/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.zst")
-sha256sums=('SKIP')
+sha256sums=('0543000eb0d689b43a367d211c8b9abbda7a7e0b7ad037307432590fe62656a3')
 
 package() {
   cp -a "$srcdir/usr" "$pkgdir/"
