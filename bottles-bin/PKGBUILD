@@ -9,14 +9,14 @@ pkgdesc="Easily manage wine and proton prefixes (prebuilt)"
 arch=('any')
 url="https://usebottles.com"
 license=('GPL-3.0-only')
-depends=('fvs2' 'gtk4' 'gtksourceview5' 'hicolor-icon-theme' 'icoextract'
-         'libadwaita' 'libportal-gtk4' 'patool' 'python' 'python-cairo'
+depends=('gtk4' 'gtksourceview5' 'hicolor-icon-theme' 'icoextract'
+         'libadwaita' 'libportal-gtk4' 'python' 'python-cairo'
          'python-certifi' 'python-chardet' 'python-charset-normalizer'
          'python-gobject' 'python-idna' 'python-markdown' 'python-orjson'
-         'python-pathvalidate' 'python-pefile' 'python-pycurl'
-         'python-requests' 'python-urllib3' 'python-yaml' 'python-yara'
-         'vkbasalt-cli')
-optdepends=('vulkan-tools: vkcube test / Vulkan info'
+         'python-pefile' 'python-pycurl'
+         'python-requests' 'python-urllib3' 'python-yaml' 'python-yara')
+optdepends=('vkbasalt: post-processing layer that applies the configured effects'
+            'vulkan-tools: vkcube test / Vulkan info'
             'xorg-xdpyinfo: display info detection'
             'imagemagick: icon/image conversion'
             'vmtouch: preload bottle files into memory'
