@@ -112,7 +112,7 @@ mv "$pkg/.SRCINFO.new" "$pkg/.SRCINFO"
 
 # drop downloaded sources and build leftovers (all gitignored, never tracked)
 rm -rf "$pkg/src" "$pkg/pkg"
-rm -f "$pkg"/*.pkg.tar.* "$pkg"/*.tar.zst "$pkg"/*.tar.gz "$pkg"/*.deb
+rm -f "$pkg"/*.pkg.tar.* "$pkg"/*.tar.zst "$pkg"/*.tar.gz "$pkg"/*.deb "$pkg"/*.AppImage
 
 ### 4: commit back to this repository ########################################
 

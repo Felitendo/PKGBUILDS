@@ -44,6 +44,7 @@ users don't need any build dependencies.
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
 | `gnome-network-displays-bin` | [GNOME/gnome-network-displays](https://gitlab.gnome.org/GNOME/gnome-network-displays) — GNOME screencasting (Miracast/Chromecast) | [gnome-network-displays-bin](https://aur.archlinux.org/packages/gnome-network-displays-bin) |
 | `waydroid-helper-bin` | [ayasa520/waydroid-helper](https://github.com/ayasa520/waydroid-helper) — GTK4 GUI for Waydroid configuration and extensions | [waydroid-helper-bin](https://aur.archlinux.org/packages/waydroid-helper-bin) |
+| `lunar-client-bin` | [lunarclient.com](https://lunarclient.com) — Minecraft PvP modpack launcher (upstream AppImage) | [lunar-client-bin](https://aur.archlinux.org/packages/lunar-client-bin) |
 
 ## Setup (one-time)
 
