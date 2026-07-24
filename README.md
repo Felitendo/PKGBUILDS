@@ -28,6 +28,10 @@ users don't need any build dependencies.
 | `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
 | `thonny-bin` | [thonny/thonny](https://github.com/thonny/thonny) — Python IDE for beginners (bundles a standalone CPython + tcl/tk) | [thonny-bin](https://aur.archlinux.org/packages/thonny-bin) |
 | `gearlever-bin` | [mijorus/gearlever](https://github.com/mijorus/gearlever) — "Gear Lever", a GTK4 + LibAdwaita AppImage manager | [gearlever-bin](https://aur.archlinux.org/packages/gearlever-bin) |
+| `bottles-bin` | [bottlesdevs/Bottles](https://github.com/bottlesdevs/Bottles) — wine/proton prefix manager (GTK4 + LibAdwaita) | [bottles-bin](https://aur.archlinux.org/packages/bottles-bin) |
+| `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
+| `protonplus-bin` | [Vysp3r/ProtonPlus](https://github.com/Vysp3r/ProtonPlus) — compatibility-tools manager (Vala/GTK4) | [protonplus-bin](https://aur.archlinux.org/packages/protonplus-bin) |
+| `zapzap-bin` | [rafatosta/zapzap](https://github.com/rafatosta/zapzap) — WhatsApp desktop client (PyQt6 + WebEngine) | [zapzap-bin](https://aur.archlinux.org/packages/zapzap-bin) |
 
 ## Setup (one-time)
 
