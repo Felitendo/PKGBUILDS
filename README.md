@@ -43,6 +43,7 @@ users don't need any build dependencies.
 | `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool (repackaged upstream bundle) | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
 | `gnome-network-displays-bin` | [GNOME/gnome-network-displays](https://gitlab.gnome.org/GNOME/gnome-network-displays) — GNOME screencasting (Miracast/Chromecast) | [gnome-network-displays-bin](https://aur.archlinux.org/packages/gnome-network-displays-bin) |
+| `waydroid-helper-bin` | [ayasa520/waydroid-helper](https://github.com/ayasa520/waydroid-helper) — GTK4 GUI for Waydroid configuration and extensions | [waydroid-helper-bin](https://aur.archlinux.org/packages/waydroid-helper-bin) |
 
 ## Setup (one-time)
 
