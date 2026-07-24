@@ -27,6 +27,7 @@ users don't need any build dependencies.
 | `chromium-widevine-helper-bin` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | [chromium-widevine-helper-bin](https://aur.archlinux.org/packages/chromium-widevine-helper-bin) |
 | `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
 | `thonny-bin` | [thonny/thonny](https://github.com/thonny/thonny) — Python IDE for beginners (bundles a standalone CPython + tcl/tk) | [thonny-bin](https://aur.archlinux.org/packages/thonny-bin) |
+| `gearlever-bin` | [mijorus/gearlever](https://github.com/mijorus/gearlever) — "Gear Lever", a GTK4 + LibAdwaita AppImage manager | [gearlever-bin](https://aur.archlinux.org/packages/gearlever-bin) |
 
 ## Setup (one-time)
 
