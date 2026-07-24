@@ -33,7 +33,10 @@ build_artifact() {
   # use the system curl instead of the vendored submodule
   git -C "$srctree" rm -q third-party/curl
   sed -i 's:libcurl_shared:libcurl:' "$srctree/lib/CMakeLists.txt"
-  patch -d "$srctree" -p1 < "$pkgdir/Qt6GuiPrivate-fix.patch"
+  # newer tags (>= 1.10.0) carry the GuiPrivate fix themselves
+  if ! grep -q 'GuiPrivate' "$srctree/gui/CMakeLists.txt"; then
+    patch -d "$srctree" -p1 < "$pkgdir/Qt6GuiPrivate-fix.patch"
+  fi
   git -C "$srctree" submodule update --init
 
   CFLAGS="${CFLAGS:-} -std=gnu17" cmake -B "$workdir/build" -S "$srctree" -Wno-dev \
