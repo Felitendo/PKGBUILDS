@@ -32,6 +32,16 @@ users don't need any build dependencies.
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
 | `protonplus-bin` | [Vysp3r/ProtonPlus](https://github.com/Vysp3r/ProtonPlus) — compatibility-tools manager (Vala/GTK4) | [protonplus-bin](https://aur.archlinux.org/packages/protonplus-bin) |
 | `zapzap-bin` | [rafatosta/zapzap](https://github.com/rafatosta/zapzap) — WhatsApp desktop client (PyQt6 + WebEngine) | [zapzap-bin](https://aur.archlinux.org/packages/zapzap-bin) |
+| `vacuumtube-bin` | [shy1132/VacuumTube](https://github.com/shy1132/VacuumTube) — YouTube Leanback (TV UI) with built-in adblocker (repackaged upstream deb) | [vacuumtube-bin](https://aur.archlinux.org/packages/vacuumtube-bin) |
+| `wiiudownloader-bin` | [Xpl0itU/WiiUDownloader](https://github.com/Xpl0itU/WiiUDownloader) — Wii U title downloader (Go + GTK3) | [wiiudownloader-bin](https://aur.archlinux.org/packages/wiiudownloader-bin) |
+| `trayscale-bin` | [DeedleFake/trayscale](https://github.com/DeedleFake/trayscale) — GUI for the Tailscale CLI (Go + GTK4) | [trayscale-bin](https://aur.archlinux.org/packages/trayscale-bin) |
+| `linux-wallpaperengine-bin` | [Almamu/linux-wallpaperengine](https://github.com/Almamu/linux-wallpaperengine) — Wallpaper Engine on Linux (commit snapshots, bundles CEF) | [linux-wallpaperengine-bin](https://aur.archlinux.org/packages/linux-wallpaperengine-bin) |
+| `librepods-bin` | [librepods-org/librepods](https://github.com/librepods-org/librepods) — AirPods integration for Linux (Qt6) | [librepods-bin](https://aur.archlinux.org/packages/librepods-bin) |
+| `planify-bin` | [alainm23/planify](https://github.com/alainm23/planify) — task manager with Todoist/Nextcloud support (Vala/GTK4, bundles gxml) | [planify-bin](https://aur.archlinux.org/packages/planify-bin) |
+| `modrinth-app-bin` | [modrinth/code](https://github.com/modrinth/code) — Modrinth's Minecraft mod manager/launcher (repackaged upstream deb) | [modrinth-app-bin](https://aur.archlinux.org/packages/modrinth-app-bin) |
+| `bazaar-bin` | [bazaar-org/bazaar](https://github.com/bazaar-org/bazaar) — GNOME app store for flatpaks/Flathub | [bazaar-bin](https://aur.archlinux.org/packages/bazaar-bin) |
+| `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool (repackaged upstream bundle) | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
+| `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
 
 ## Setup (one-time)
 
