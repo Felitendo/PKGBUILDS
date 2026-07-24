@@ -3,7 +3,7 @@
 # https://github.com/Felitendo/PKGBUILDS
 
 pkgname=chiaki-ng-bin
-pkgver=0
+pkgver=1.10.0
 pkgrel=1
 pkgdesc="Free and Open Source PlayStation Remote Play client (prebuilt)"
 arch=('x86_64')
@@ -19,7 +19,7 @@ optdepends=('intel-media-driver: vaapi backend for Intel GPUs [>= Broadwell]'
 provides=('chiaki-ng' 'chiaki')
 conflicts=('chiaki-ng' 'chiaki')
 source=("https://github.com/Felitendo/PKGBUILDS/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.zst")
-sha256sums=('SKIP')
+sha256sums=('76c55be0342c651a65ffe5df5ed14930d43b844590cac9f4ea67d23e80557599')
 
 package() {
   cp -a "$srcdir/usr" "$pkgdir/"
