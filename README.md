@@ -34,7 +34,6 @@ users don't need any build dependencies.
 | `vacuumtube-bin` | [shy1132/VacuumTube](https://github.com/shy1132/VacuumTube) — YouTube Leanback (TV UI) with built-in adblocker (repackaged upstream deb) | [vacuumtube-bin](https://aur.archlinux.org/packages/vacuumtube-bin) |
 | `wiiudownloader-bin` | [Xpl0itU/WiiUDownloader](https://github.com/Xpl0itU/WiiUDownloader) — Wii U title downloader (Go + GTK3) | [wiiudownloader-bin](https://aur.archlinux.org/packages/wiiudownloader-bin) |
 | `trayscale-bin` | [DeedleFake/trayscale](https://github.com/DeedleFake/trayscale) — GUI for the Tailscale CLI (Go + GTK4) | [trayscale-bin](https://aur.archlinux.org/packages/trayscale-bin) |
-| `linux-wallpaperengine-bin` | [Almamu/linux-wallpaperengine](https://github.com/Almamu/linux-wallpaperengine) — Wallpaper Engine on Linux (commit snapshots, bundles CEF) | [linux-wallpaperengine-bin](https://aur.archlinux.org/packages/linux-wallpaperengine-bin) |
 | `librepods-bin` | [librepods-org/librepods](https://github.com/librepods-org/librepods) — AirPods integration for Linux (Qt6) | [librepods-bin](https://aur.archlinux.org/packages/librepods-bin) |
 | `planify-bin` | [alainm23/planify](https://github.com/alainm23/planify) — task manager with Todoist/Nextcloud support (Vala/GTK4, bundles gxml) | [planify-bin](https://aur.archlinux.org/packages/planify-bin) |
 | `modrinth-app-bin` | [modrinth/code](https://github.com/modrinth/code) — Modrinth's Minecraft mod manager/launcher (repackaged upstream deb) | [modrinth-app-bin](https://aur.archlinux.org/packages/modrinth-app-bin) |
