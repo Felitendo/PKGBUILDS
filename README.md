@@ -12,9 +12,10 @@ package's upstream for a new release. When one is found it:
 
 ## Ground rule
 
-**Nothing is ever built or hosted here.** Every `PKGBUILD` sources a
-deliverable published by *upstream* — a release tarball, `.deb`, wheel or
-AppImage — exactly like any hand-written AUR package would.
+**This repository never hosts a binary.** Every `PKGBUILD` sources what
+*upstream* published — a release tarball, `.deb`, wheel or AppImage — and
+either repackages it (`-bin`) or builds it (no suffix), exactly like any
+hand-written AUR package would. CI only bumps `pkgver` and the checksums.
 
 This is not a style preference. The
 [AUR submission guidelines](https://wiki.archlinux.org/title/AUR_submission_guidelines#Rules_of_submission)
