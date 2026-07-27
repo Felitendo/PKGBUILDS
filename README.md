@@ -38,13 +38,16 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 
 | Package | Upstream | Upstream deliverable | AUR |
 |---|---|---|---|
+| `bazaar` | [bazaar-org/bazaar](https://github.com/bazaar-org/bazaar) — GNOME app store for flatpaks/Flathub | *built from source* | [bazaar](https://aur.archlinux.org/packages/bazaar) |
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | AppImage | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
+| `chromium-widevine-helper` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | *no build step* | [chromium-widevine-helper](https://aur.archlinux.org/packages/chromium-widevine-helper) |
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | tarball | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
 | `lunar-client-bin` | [lunarclient.com](https://lunarclient.com) — Minecraft PvP modpack launcher | AppImage | [lunar-client-bin](https://aur.archlinux.org/packages/lunar-client-bin) |
 | `modrinth-app-bin` | [modrinth/code](https://github.com/modrinth/code) — Minecraft mod manager/launcher | `.deb` | [modrinth-app-bin](https://aur.archlinux.org/packages/modrinth-app-bin) |
 | `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | tarball | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
 | `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool | self-contained tarball | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
+| `timetable` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis) — "Timetable", a GTK4 + LibAdwaita client for WebUntis | *built from source* | [timetable](https://aur.archlinux.org/packages/timetable) |
 | `vacuumtube-bin` | [shy1132/VacuumTube](https://github.com/shy1132/VacuumTube) — YouTube Leanback (TV UI) with built-in adblocker | `.deb` | [vacuumtube-bin](https://aur.archlinux.org/packages/vacuumtube-bin) |
 | `waydroid-helper-bin` | [ayasa520/waydroid-helper](https://github.com/ayasa520/waydroid-helper) — GTK4 GUI for Waydroid configuration and extensions | AppImage | [waydroid-helper-bin](https://aur.archlinux.org/packages/waydroid-helper-bin) |
 | `wiiudownloader-bin` | [Xpl0itU/WiiUDownloader](https://github.com/Xpl0itU/WiiUDownloader) — Wii U title downloader (Go + GTK3) | AppImage | [wiiudownloader-bin](https://aur.archlinux.org/packages/wiiudownloader-bin) |
