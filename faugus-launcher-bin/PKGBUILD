@@ -3,8 +3,8 @@
 # https://github.com/Felitendo/PKGBUILDS
 
 pkgname=faugus-launcher-bin
-pkgver=2.0.2
-pkgrel=2
+pkgver=2.0.3
+pkgrel=1
 pkgdesc="Simple and lightweight app for running Windows games using UMU-Launcher (upstream binary)"
 arch=('any')
 url="https://github.com/Faugus/faugus-launcher"
@@ -18,10 +18,10 @@ provides=('faugus-launcher')
 conflicts=('faugus-launcher')
 # The Debian revision in the asset name does not follow from pkgver, so the
 # exact name is tracked here and refreshed automatically.
-_asset="faugus-launcher_2.0.2-1_all.deb"
+_asset="faugus-launcher_2.0.3-1_all.deb"
 source=("${pkgname}-${pkgver}.deb::${url}/releases/download/${pkgver}/${_asset}")
 noextract=("${pkgname}-${pkgver}.deb")
-sha256sums=('c694d85af50cdc5fc6fbd50453075b799d5a458cc0bd123abe31aafde8cdc6fa')
+sha256sums=('b2a06a8f5a40f0523d4aac904dcc30927718502509ab2863f847d8ffd63511cb')
 
 package() {
   local _deb="$srcdir/deb"
