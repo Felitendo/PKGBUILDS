@@ -1,48 +1,54 @@
 # PKGBUILDS
 
-Automated `-bin` packages for the [AUR](https://aur.archlinux.org), kept up to
-date by GitHub Actions.
+Automated AUR packages, kept up to date by GitHub Actions.
 
 Every 6 hours the [update workflow](.github/workflows/update.yml) checks each
 package's upstream for a new release. When one is found it:
 
-1. builds the software in an Arch Linux container,
-2. publishes the resulting install tree as a `.tar.zst` asset on a GitHub
-   release of **this** repository (tag `<pkgname>-<version>`),
-3. updates the `PKGBUILD` (pkgver/pkgrel/sha256sums), test-builds it with
-   `makepkg` and regenerates `.SRCINFO`,
-4. commits the changes back to this repository,
-5. pushes `PKGBUILD` + `.SRCINFO` to the AUR, and
-6. deletes the package's superseded releases (older versions, tag included).
+1. updates the `PKGBUILD` (pkgver/pkgrel/sha256sums),
+2. test-builds it with `makepkg` and regenerates `.SRCINFO`,
+3. commits the changes back to this repository, and
+4. pushes the package files to the AUR.
 
-The AUR packages themselves only download the prebuilt asset from step 2, so
-users don't need any build dependencies.
+## Ground rule
+
+**Nothing is ever built or hosted here.** Every `PKGBUILD` sources a
+deliverable published by *upstream* — a release tarball, `.deb`, wheel or
+AppImage — exactly like any hand-written AUR package would.
+
+This is not a style preference. The
+[AUR submission guidelines](https://wiki.archlinux.org/title/AUR_submission_guidelines#Rules_of_submission)
+say:
+
+> Packages that use **prebuilt** deliverables, when the sources are available,
+> must use the `-bin` suffix. […] The AUR should not contain the binary
+> tarball created by makepkg
+
+A `-bin` package repackages what upstream ships. Building the software
+yourself, publishing the result as a release asset and having the AUR
+`PKGBUILD` download *that* makes this repository an unofficial binary
+repository — users can no longer verify that the package matches what
+upstream released. Packages set up that way were removed from the AUR in
+July 2026; do not reintroduce the pattern.
+
+If upstream ships no Linux binary, there are exactly two options: build from
+source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 
 ## Packages
 
-| Package | Upstream | AUR |
-|---|---|---|
-| `timetable-bin` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis) — "Timetable", a GTK4 + LibAdwaita client for WebUntis | [timetable-bin](https://aur.archlinux.org/packages/timetable-bin) |
-| `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
-| `chromium-widevine-helper-bin` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | [chromium-widevine-helper-bin](https://aur.archlinux.org/packages/chromium-widevine-helper-bin) |
-| `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
-| `thonny-bin` | [thonny/thonny](https://github.com/thonny/thonny) — Python IDE for beginners (bundles a standalone CPython + tcl/tk) | [thonny-bin](https://aur.archlinux.org/packages/thonny-bin) |
-| `gearlever-bin` | [mijorus/gearlever](https://github.com/mijorus/gearlever) — "Gear Lever", a GTK4 + LibAdwaita AppImage manager | [gearlever-bin](https://aur.archlinux.org/packages/gearlever-bin) |
-| `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
-| `protonplus-bin` | [Vysp3r/ProtonPlus](https://github.com/Vysp3r/ProtonPlus) — compatibility-tools manager (Vala/GTK4) | [protonplus-bin](https://aur.archlinux.org/packages/protonplus-bin) |
-| `zapzap-bin` | [rafatosta/zapzap](https://github.com/rafatosta/zapzap) — WhatsApp desktop client (PyQt6 + WebEngine) | [zapzap-bin](https://aur.archlinux.org/packages/zapzap-bin) |
-| `vacuumtube-bin` | [shy1132/VacuumTube](https://github.com/shy1132/VacuumTube) — YouTube Leanback (TV UI) with built-in adblocker (repackaged upstream deb) | [vacuumtube-bin](https://aur.archlinux.org/packages/vacuumtube-bin) |
-| `wiiudownloader-bin` | [Xpl0itU/WiiUDownloader](https://github.com/Xpl0itU/WiiUDownloader) — Wii U title downloader (Go + GTK3) | [wiiudownloader-bin](https://aur.archlinux.org/packages/wiiudownloader-bin) |
-| `trayscale-bin` | [DeedleFake/trayscale](https://github.com/DeedleFake/trayscale) — GUI for the Tailscale CLI (Go + GTK4) | [trayscale-bin](https://aur.archlinux.org/packages/trayscale-bin) |
-| `librepods-bin` | [librepods-org/librepods](https://github.com/librepods-org/librepods) — AirPods integration for Linux (Qt6) | [librepods-bin](https://aur.archlinux.org/packages/librepods-bin) |
-| `planify-bin` | [alainm23/planify](https://github.com/alainm23/planify) — task manager with Todoist/Nextcloud support (Vala/GTK4, bundles gxml) | [planify-bin](https://aur.archlinux.org/packages/planify-bin) |
-| `modrinth-app-bin` | [modrinth/code](https://github.com/modrinth/code) — Modrinth's Minecraft mod manager/launcher (repackaged upstream deb) | [modrinth-app-bin](https://aur.archlinux.org/packages/modrinth-app-bin) |
-| `bazaar-bin` | [bazaar-org/bazaar](https://github.com/bazaar-org/bazaar) — GNOME app store for flatpaks/Flathub | [bazaar-bin](https://aur.archlinux.org/packages/bazaar-bin) |
-| `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool (repackaged upstream bundle) | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
-| `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
-| `gnome-network-displays-bin` | [GNOME/gnome-network-displays](https://gitlab.gnome.org/GNOME/gnome-network-displays) — GNOME screencasting (Miracast/Chromecast) | [gnome-network-displays-bin](https://aur.archlinux.org/packages/gnome-network-displays-bin) |
-| `waydroid-helper-bin` | [ayasa520/waydroid-helper](https://github.com/ayasa520/waydroid-helper) — GTK4 GUI for Waydroid configuration and extensions | [waydroid-helper-bin](https://aur.archlinux.org/packages/waydroid-helper-bin) |
-| `lunar-client-bin` | [lunarclient.com](https://lunarclient.com) — Minecraft PvP modpack launcher (upstream AppImage) | [lunar-client-bin](https://aur.archlinux.org/packages/lunar-client-bin) |
+| Package | Upstream | Upstream deliverable | AUR |
+|---|---|---|---|
+| `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | AppImage | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
+| `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
+| `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | tarball | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
+| `lunar-client-bin` | [lunarclient.com](https://lunarclient.com) — Minecraft PvP modpack launcher | AppImage | [lunar-client-bin](https://aur.archlinux.org/packages/lunar-client-bin) |
+| `modrinth-app-bin` | [modrinth/code](https://github.com/modrinth/code) — Minecraft mod manager/launcher | `.deb` | [modrinth-app-bin](https://aur.archlinux.org/packages/modrinth-app-bin) |
+| `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | tarball | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
+| `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool | self-contained tarball | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
+| `vacuumtube-bin` | [shy1132/VacuumTube](https://github.com/shy1132/VacuumTube) — YouTube Leanback (TV UI) with built-in adblocker | `.deb` | [vacuumtube-bin](https://aur.archlinux.org/packages/vacuumtube-bin) |
+| `waydroid-helper-bin` | [ayasa520/waydroid-helper](https://github.com/ayasa520/waydroid-helper) — GTK4 GUI for Waydroid configuration and extensions | AppImage | [waydroid-helper-bin](https://aur.archlinux.org/packages/waydroid-helper-bin) |
+| `wiiudownloader-bin` | [Xpl0itU/WiiUDownloader](https://github.com/Xpl0itU/WiiUDownloader) — Wii U title downloader (Go + GTK3) | AppImage | [wiiudownloader-bin](https://aur.archlinux.org/packages/wiiudownloader-bin) |
+| `zapzap-bin` | [rafatosta/zapzap](https://github.com/rafatosta/zapzap) — WhatsApp desktop client (PyQt6 + WebEngine) | wheel | [zapzap-bin](https://aur.archlinux.org/packages/zapzap-bin) |
 
 ## Setup (one-time)
 
@@ -60,25 +66,27 @@ package automatically.
 
 ## Adding a package
 
-Create a new directory named after the AUR package containing:
+Check first that upstream actually publishes a Linux binary and that the AUR
+does not already carry an equivalent package — a `-bin` next to a maintained
+source package is fine, a second copy of the same thing is not.
 
-- **`PKGBUILD`** — sources the prebuilt asset from
-  `https://github.com/Felitendo/PKGBUILDS/releases/download/<pkgname>-<pkgver>/<pkgname>-<pkgver>.tar.zst`.
-  `pkgver`, `pkgrel` and `sha256sums` are maintained by CI.
-- **`pkg.sh`** — bash sourced by [scripts/update-package.sh](scripts/update-package.sh).
-  Always provides `latest_version` (prints the latest upstream version, no
-  `v` prefix), plus one of two modes:
-  - *upstream has no binaries* (e.g. `timetable-bin`): define
-    `build_artifact <version> <output-file>` (build upstream and write the
-    install tree as a tarball containing `usr/`) and `BUILD_DEPS` (array of
-    Arch packages needed to build). CI hosts the result as a GitHub release
-    asset which the PKGBUILD downloads.
-  - *upstream hosts binaries* (e.g. `fluxer-bin`): define
-    `refresh_checksums <version> <pkgbuild-path>` which updates the
-    `sha256sums*` lines for the new version. The PKGBUILD sources upstream
-    URLs directly and nothing is hosted here.
+Then create a directory named after the AUR package containing:
 
-  Other local source files in the directory (`.desktop` files, etc.) are
+- **`PKGBUILD`** — sources upstream's release URLs directly. `pkgver`,
+  `pkgrel` and `sha256sums` are maintained by CI, so keep `sha256sums` on a
+  single line.
+- **`pkg.sh`** — bash sourced by [scripts/update-package.sh](scripts/update-package.sh),
+  defining:
+  - `latest_version` — prints the latest upstream version, no `v` prefix.
+  - `refresh_checksums <version> <pkgbuild-path>` — updates the `sha256sums*`
+    lines for that version. If the asset name carries build metadata that does
+    not follow from `pkgver` (see `snapx-bin`, `faugus-launcher-bin`), resolve
+    it via the GitHub API here and sync an `_asset` variable in the `PKGBUILD`
+    too.
+  - `BUILD_DEPS` — optional array of Arch packages to install before the CI
+    test build; only needed by packages that build from source.
+
+  Other local source files in the directory (`.desktop` files, patches, …) are
   pushed to the AUR alongside `PKGBUILD` and `.SRCINFO`.
 
 The workflow discovers package directories automatically. Trigger a run

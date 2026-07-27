@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # Update one package directory:
 #   1. determine the latest upstream version (pkg.sh: latest_version)
-#   2. bring the PKGBUILD up to date:
-#      - packages we build ourselves (pkg.sh defines build_artifact): make
-#        sure the GitHub release asset for that version exists - building and
-#        uploading it if necessary - and sync pkgver/sha256sums with it
-#      - packages prebuilt by upstream (no build_artifact): on a new version,
-#        set pkgver and let pkg.sh's refresh_checksums update the sums
+#   2. on a new upstream version: set pkgver and let pkg.sh's
+#      refresh_checksums update the sums
 #   3. if the PKGBUILD changed: set pkgrel and run a makepkg test build
 #   4. regenerate .SRCINFO and commit changes back to this repository
 #   5. push the package files to the AUR if it differs
 #
-# Requires: GH_TOKEN (GitHub release + repo push), AUR_SSH_PRIVATE_KEY.
+# Every package sources deliverables published by upstream - the AUR does not
+# allow a PKGBUILD to pull in a binary tarball built by the maintainer, so
+# nothing is ever built or hosted here.
+#
+# Requires: GH_TOKEN (repo push), AUR_SSH_PRIVATE_KEY.
 # Optional: AUR_GIT_NAME / AUR_GIT_EMAIL for the AUR commit identity.
 set -euo pipefail
 
@@ -41,39 +41,11 @@ oldrel="$(grep -Po '^pkgrel=\K.*' "$pkg/PKGBUILD")"
 
 ### 2: bring the PKGBUILD up to date ########################################
 
-if declare -f build_artifact >/dev/null; then
-  # We build the binary artifact and host it as a GitHub release asset.
-  tag="$pkg-$ver"
-  asset="$pkg-$ver.tar.zst"
-
-  if gh release view "$tag" --json assets -q '.assets[].name' 2>/dev/null | grep -qxF "$asset"; then
-    echo "$pkg: release $tag already contains $asset - reusing it"
-    gh release download "$tag" --pattern "$asset" --dir "$pkg" --clobber
-  else
-    echo "$pkg: building $asset"
-    if [[ "${CI:-}" == "true" && "${#BUILD_DEPS[@]}" -gt 0 ]]; then
-      pacman -S --noconfirm --needed "${BUILD_DEPS[@]}"
-    fi
-    build_artifact "$ver" "$repo_root/$pkg/$asset"
-    gh release view "$tag" >/dev/null 2>&1 || \
-      gh release create "$tag" --title "$tag" \
-        --notes "Automated build of $pkg $ver (upstream: ${UPSTREAM_REPO:-unknown})."
-    gh release upload "$tag" "$pkg/$asset" --clobber
-  fi
-
-  sha="$(sha256sum "$pkg/$asset" | cut -d' ' -f1)"
-  sed -i \
-    -e "s|^pkgver=.*|pkgver=$ver|" \
-    -e "s|^sha256sums=.*|sha256sums=('$sha')|" \
-    "$pkg/PKGBUILD"
+if [[ "$ver" != "$oldver" ]]; then
+  sed -i "s|^pkgver=.*|pkgver=$ver|" "$pkg/PKGBUILD"
+  refresh_checksums "$ver" "$pkg/PKGBUILD"
 else
-  # Upstream publishes the binaries itself; only refresh version + checksums.
-  if [[ "$ver" != "$oldver" ]]; then
-    sed -i "s|^pkgver=.*|pkgver=$ver|" "$pkg/PKGBUILD"
-    refresh_checksums "$ver" "$pkg/PKGBUILD"
-  else
-    echo "$pkg: $ver is current"
-  fi
+  echo "$pkg: $ver is current"
 fi
 
 ### 3: pkgrel + test build if the PKGBUILD changed ##########################
@@ -99,6 +71,11 @@ else
     rel=$((oldrel + 1))
   fi
   sed -i "s|^pkgrel=.*|pkgrel=$rel|" "$pkg/PKGBUILD"
+
+  # source packages need their makedepends to get through build()
+  if [[ "${CI:-}" == "true" && "${#BUILD_DEPS[@]}" -gt 0 ]]; then
+    pacman -S --noconfirm --needed "${BUILD_DEPS[@]}"
+  fi
 
   # -d: the runner only needs to package, not run the result
   run_makepkg -fdc
@@ -169,23 +146,4 @@ else
   git commit -m "Update to $ver-$rel"
   git push origin HEAD:master
   echo "$pkg: pushed $ver-$rel to the AUR"
-fi
-
-### 6: prune superseded GitHub releases ######################################
-
-# Build-mode packages get one release per version; once a newer version is
-# fully published (asset built, PKGBUILD updated, AUR pushed - i.e. we got
-# this far) the older releases are no longer referenced by anything, so drop
-# them together with their tags. Runs every time to also catch leftovers.
-cd "$repo_root"
-if declare -f build_artifact >/dev/null; then
-  while IFS= read -r tag; do
-    [[ "$tag" == "$pkg-$ver" ]] && continue
-    rest="${tag#"$pkg-"}"
-    # only this package's tags: "<pkg>-<version>" (a pkgver never contains
-    # "-", which also keeps prefix-sharing package names apart)
-    [[ "$tag" == "$pkg-"* && "$rest" != *-* ]] || continue
-    echo "$pkg: deleting superseded release $tag"
-    gh release delete "$tag" --cleanup-tag --yes
-  done < <(gh release list --limit 100 --json tagName -q '.[].tagName')
 fi
