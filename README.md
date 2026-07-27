@@ -39,7 +39,6 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 
 | Package | Upstream | Upstream deliverable | AUR |
 |---|---|---|---|
-| `bazaar` | [bazaar-org/bazaar](https://github.com/bazaar-org/bazaar) — GNOME app store for flatpaks/Flathub | *built from source* | [bazaar](https://aur.archlinux.org/packages/bazaar) |
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | AppImage | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
 | `chromium-widevine-helper` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | *no build step* | [chromium-widevine-helper](https://aur.archlinux.org/packages/chromium-widevine-helper) |
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
@@ -70,8 +69,10 @@ package automatically.
 
 ## Adding a package
 
-Check first that upstream actually publishes a Linux binary and that the AUR
-does not already carry an equivalent package — a `-bin` next to a maintained
+Check first that upstream actually publishes a Linux binary, that the package
+is not already in the **official repositories** (the AUR rejects the push
+outright: "package already provided by [extra]"), and that the AUR does not
+already carry an equivalent package — a `-bin` next to a maintained
 source package is fine, a second copy of the same thing is not.
 
 Then create a directory named after the AUR package containing:
