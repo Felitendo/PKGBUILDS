@@ -93,6 +93,8 @@ rm -f "$pkg"/*.pkg.tar.* "$pkg"/*.tar.zst "$pkg"/*.tar.gz "$pkg"/*.deb "$pkg"/*.
 
 ### 4: commit back to this repository ########################################
 
+committed=false
+
 if [[ "${CI:-}" == "true" ]]; then
   git config user.name "github-actions[bot]"
   git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -104,6 +106,7 @@ if [[ "${CI:-}" == "true" ]]; then
     git commit -m "$pkg: update to $ver-$rel [skip ci]"
     git pull --rebase origin "${GITHUB_REF_NAME:-main}"
     git push origin "HEAD:${GITHUB_REF_NAME:-main}"
+    committed=true
   fi
 fi
 
@@ -127,7 +130,26 @@ echo 'aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuBKrPzbawxA/k2g6Nc
 export GIT_SSH_COMMAND="ssh -i $sshdir/key -o UserKnownHostsFile=$sshdir/known_hosts -o IdentitiesOnly=yes"
 
 aurdir="$(mktemp -d)"
-git clone "ssh://aur@aur.archlinux.org/$pkg.git" "$aurdir"
+
+# The AUR goes down for maintenance every now and then, and the clone is the
+# first thing that notices. When this run produced no commit there is nothing
+# to publish, so an unreachable AUR is noise - warn and stop instead of
+# failing the job. A run that did commit stays red: its push is still owed.
+# Anything that is not a connectivity problem (missing repository, rejected
+# key) is fatal either way.
+if ! clone_log="$(git clone "ssh://aur@aur.archlinux.org/$pkg.git" "$aurdir" 2>&1)"; then
+  printf '%s\n' "$clone_log" >&2
+  if [[ "$committed" == false ]] &&
+     grep -qEi 'down due to maintenance|Connection (timed out|refused|closed)|Could not resolve hostname|kex_exchange|Broken pipe|Operation timed out' \
+       <<< "$clone_log"; then
+    echo "::warning::$pkg: the AUR is unreachable and this run has nothing to push -" \
+         "skipping the AUR sync, the next run picks it up."
+    exit 0
+  fi
+  echo "::error::$pkg: could not clone the AUR repository."
+  exit 1
+fi
+printf '%s\n' "$clone_log"
 
 # every tracked file of the package except our automation glue belongs on
 # the AUR (PKGBUILD, .SRCINFO, .desktop files, .install files, ...)
