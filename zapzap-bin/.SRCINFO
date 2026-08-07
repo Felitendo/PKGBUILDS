@@ -1,6 +1,6 @@
 pkgbase = zapzap-bin
 	pkgdesc = WhatsApp desktop client written in PyQt6 + PyQt6-WebEngine (upstream wheel)
-	pkgver = 7.3
+	pkgver = 7.4
 	pkgrel = 1
 	url = https://github.com/rafatosta/zapzap
 	arch = any
@@ -13,10 +13,10 @@ pkgbase = zapzap-bin
 	optdepends = hunspell: spell check
 	provides = zapzap
 	conflicts = zapzap
-	noextract = zapzap-7.3-py3-none-any.whl
-	source = zapzap-7.3-py3-none-any.whl::https://github.com/rafatosta/zapzap/releases/download/7.3/zapzap-7.3-py3-none-any.whl
-	source = zapzap-bin-7.3-src.tar.gz::https://github.com/rafatosta/zapzap/archive/refs/tags/7.3.tar.gz
-	sha256sums = c194c4c3f5ae4f05e0f3988634b3acf78de9bbf7a342a6086c56fdd22f609302
-	sha256sums = 38a333c8a169f155c16c899d203a3ac5242e88389e3f5ea843b33a2179eeedd6
+	noextract = zapzap-7.4-py3-none-any.whl
+	source = zapzap-7.4-py3-none-any.whl::https://github.com/rafatosta/zapzap/releases/download/7.4/zapzap-7.4-py3-none-any.whl
+	source = zapzap-bin-7.4-src.tar.gz::https://github.com/rafatosta/zapzap/archive/refs/tags/7.4.tar.gz
+	sha256sums = 12ebf416f4e20942e3455875d25557ea97d02aec8cfe249533ae5222c079a248
+	sha256sums = 8019709d523fbe4882108feb8557d97e7b03a52bb01db89bb397f2518b7dab17
 
 pkgname = zapzap-bin
