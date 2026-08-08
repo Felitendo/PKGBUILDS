@@ -1,6 +1,6 @@
 pkgbase = cachy-auto-update
 	pkgdesc = Unattended background updates for CachyOS, aware of battery, gaming and manual package management
-	pkgver = 1.0.0
+	pkgver = 1.0.1
 	pkgrel = 1
 	url = https://github.com/Felitendo/cachy-auto-update
 	install = cachy-auto-update.install
@@ -23,7 +23,7 @@ pkgbase = cachy-auto-update
 	optdepends = gearlever: AppImage updates
 	backup = etc/cachy-auto-update/cachy-auto-update.conf
 	backup = etc/logrotate.d/cachy-auto-update
-	source = cachy-auto-update-1.0.0.tar.gz::https://github.com/Felitendo/cachy-auto-update/archive/refs/tags/v1.0.0.tar.gz
-	sha256sums = e0ed0e3d76174de6d49625236487af90da0071a3ff54588a327020fd90a6db32
+	source = cachy-auto-update-1.0.1.tar.gz::https://github.com/Felitendo/cachy-auto-update/archive/refs/tags/v1.0.1.tar.gz
+	sha256sums = 570747d9bc8fb1e5d9011574f43522fc0c52769a975f58a136def1e22ab3298d
 
 pkgname = cachy-auto-update
