@@ -1,0 +1,33 @@
+# Maintainer: Felitendo
+# This PKGBUILD is updated automatically:
+# https://github.com/Felitendo/PKGBUILDS
+
+pkgname=cachy-auto-update
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Unattended background updates for CachyOS, aware of battery, gaming and manual package management"
+arch=('any')
+url="https://github.com/Felitendo/cachy-auto-update"
+license=('GPL-3.0-or-later')
+depends=('bash' 'systemd' 'pacman' 'pacman-contrib' 'util-linux' 'sudo'
+         'gettext')
+makedepends=('gettext' 'scdoc')
+optdepends=('paru: AUR package updates'
+            'yay: AUR package updates'
+            'base-devel: required to build AUR packages'
+            'flatpak: Flatpak updates'
+            'libnotify: desktop notifications'
+            'gearlever: AppImage updates')
+backup=('etc/cachy-auto-update/cachy-auto-update.conf'
+        'etc/logrotate.d/cachy-auto-update')
+install="${pkgname}.install"
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('e0ed0e3d76174de6d49625236487af90da0071a3ff54588a327020fd90a6db32')
+
+build() {
+  make -C "${pkgname}-${pkgver}"
+}
+
+package() {
+  make -C "${pkgname}-${pkgver}" DESTDIR="$pkgdir" install
+}
