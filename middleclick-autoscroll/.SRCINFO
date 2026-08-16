@@ -1,7 +1,7 @@
 pkgbase = middleclick-autoscroll
-	pkgdesc = Middle-click autoscroll for Chromium-based applications - Electron, CEF, Flatpaks, Spotify and Steam included
+	pkgdesc = Middle-click autoscroll in every application that supports it
 	pkgver = 1.0.1
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/Felitendo/middleclick-autoscroll
 	install = middleclick-autoscroll.install
 	arch = any
