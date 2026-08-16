@@ -46,6 +46,7 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | tarball | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
 | `lunar-client-bin` | [lunarclient.com](https://lunarclient.com) — Minecraft PvP modpack launcher | AppImage | [lunar-client-bin](https://aur.archlinux.org/packages/lunar-client-bin) |
+| `middleclick-autoscroll` | [Felitendo/middleclick-autoscroll](https://github.com/Felitendo/middleclick-autoscroll) — middle-click autoscroll for Chromium-based applications (Electron, CEF, Flatpaks, Spotify, Steam) | *built from source* | [middleclick-autoscroll](https://aur.archlinux.org/packages/middleclick-autoscroll) |
 | `modrinth-app-bin` | [modrinth/code](https://github.com/modrinth/code) — Minecraft mod manager/launcher | `.deb` | [modrinth-app-bin](https://aur.archlinux.org/packages/modrinth-app-bin) |
 | `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | tarball | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
 | `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool | self-contained tarball | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
