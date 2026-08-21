@@ -12,9 +12,10 @@
 # the versioned "v*" tags are packaged; nightlies would push several AUR
 # updates a day and cannot be checksummed reliably.
 #
-# pkgver drops the hyphen from the tag (v0.1.0-alpha.2 -> 0.1.0alpha.2). That
-# sorts newer than a later plain 0.1.0, so the first stable release of a
-# version that was packaged as a prerelease needs an epoch bump.
+# pkgver drops the hyphen from the tag (v0.1.0-alpha.2 -> 0.1.0alpha.2).
+# pacman sorts that older than a later plain 0.1.0 (`vercmp 0.1.0alpha.2 0.1.0`
+# is -1, the trailing alphabetic segment loses), so the prereleases upgrade to
+# the eventual stable release on their own and no epoch is needed.
 
 UPSTREAM_REPO="Obiente/nc-native"
 
