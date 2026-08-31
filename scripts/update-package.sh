@@ -5,7 +5,8 @@
 #      refresh_checksums update the sums
 #   3. if the PKGBUILD changed: set pkgrel and run a makepkg test build
 #   4. regenerate .SRCINFO and commit changes back to this repository
-#   5. push the package files to the AUR if it differs
+#   5. push the package files to the AUR if it differs, unless the package
+#      opts out with AUR_PUBLISH=false
 #
 # Every package sources deliverables published by upstream - the AUR does not
 # allow a PKGBUILD to pull in a binary tarball built by the maintainer, so
@@ -27,6 +28,10 @@ if [[ "${CI:-}" == "true" ]]; then
 fi
 
 BUILD_DEPS=()
+# A package can be kept out of the AUR while it is still being prepared here:
+# pkg.sh sets AUR_PUBLISH=false and everything up to step 4 runs as usual, so
+# the PKGBUILD stays current and test-built - only the publishing waits.
+AUR_PUBLISH=true
 source "$pkg/pkg.sh"
 
 ver="$(latest_version || true)"
@@ -89,7 +94,8 @@ mv "$pkg/.SRCINFO.new" "$pkg/.SRCINFO"
 
 # drop downloaded sources and build leftovers (all gitignored, never tracked)
 rm -rf "$pkg/src" "$pkg/pkg"
-rm -f "$pkg"/*.pkg.tar.* "$pkg"/*.tar.zst "$pkg"/*.tar.gz "$pkg"/*.deb "$pkg"/*.AppImage
+rm -f "$pkg"/*.pkg.tar.* "$pkg"/*.tar.zst "$pkg"/*.tar.gz "$pkg"/*.tar.bz2 \
+      "$pkg"/*.deb "$pkg"/*.AppImage
 
 ### 4: commit back to this repository ########################################
 
@@ -111,6 +117,11 @@ if [[ "${CI:-}" == "true" ]]; then
 fi
 
 ### 5: push to the AUR #######################################################
+
+if [[ "$AUR_PUBLISH" != true ]]; then
+  echo "$pkg: AUR_PUBLISH is off - kept up to date here, not published to the AUR"
+  exit 0
+fi
 
 if [[ -z "${AUR_SSH_PRIVATE_KEY:-}" ]]; then
   echo "::error::$pkg: AUR_SSH_PRIVATE_KEY is not set - cannot push to the AUR." \
