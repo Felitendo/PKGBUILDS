@@ -43,6 +43,9 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `cachy-auto-update` | [Felitendo/cachy-auto-update](https://github.com/Felitendo/cachy-auto-update) — unattended background updates for CachyOS (pacman, AUR, Flatpak, AppImages) | *built from source* | [cachy-auto-update](https://aur.archlinux.org/packages/cachy-auto-update) |
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | AppImage | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
 | `chromium-widevine-helper` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | *no build step* | [chromium-widevine-helper](https://aur.archlinux.org/packages/chromium-widevine-helper) |
+| `concat` | [jub0t/Concat](https://github.com/jub0t/Concat) — free and open-source CapCut replacement (Tauri 2 shell around a Rust video engine) | *built from source* | *not published yet* |
+| `concat-bin` | [jub0t/Concat](https://github.com/jub0t/Concat) — prebuilt release of `concat` | `.deb` | *not published yet* |
+| `concat-git` | [jub0t/Concat](https://github.com/jub0t/Concat) — `main` branch of `concat` | *built from source* | [concat-git](https://aur.archlinux.org/packages/concat-git) |
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | tarball | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
 | `lunar-client-bin` | [lunarclient.com](https://lunarclient.com) — Minecraft PvP modpack launcher | AppImage | [lunar-client-bin](https://aur.archlinux.org/packages/lunar-client-bin) |
@@ -97,6 +100,10 @@ Then create a directory named after the AUR package containing:
     too.
   - `BUILD_DEPS` — optional array of Arch packages to install before the CI
     test build; only needed by packages that build from source.
+  - `AUR_PUBLISH` — optional; set to `false` to keep a package out of the AUR
+    while it is still being prepared. Everything else still runs, so the
+    `PKGBUILD` is kept current and test-built; only the publishing waits.
+    Flip it to `true` to go live (`concat`, `concat-bin`).
 
   Other local source files in the directory (`.desktop` files, patches, …) are
   pushed to the AUR alongside `PKGBUILD` and `.SRCINFO`.

@@ -1,0 +1,74 @@
+# Maintainer: Felitendo
+# This PKGBUILD is updated automatically:
+# https://github.com/Felitendo/PKGBUILDS
+
+pkgname=concat-bin
+pkgver=0.2.0alpha.15
+pkgrel=1
+pkgdesc="Free and open-source CapCut replacement, a Tauri video editor with a Rust engine (upstream binary)"
+arch=('x86_64')
+url="https://github.com/jub0t/Concat"
+license=('MPL-2.0')
+# What the binary links against, plus what it reaches for at run time:
+# glib-networking is the webview's TLS backend, and the ffmpeg pair is
+# spawned by every media operation - see the resources note in package().
+# The model downloads carry their own TLS (rustls), so openssl is not needed.
+depends=('webkit2gtk-4.1' 'gtk3' 'glib2' 'libsoup3' 'gdk-pixbuf2' 'cairo'
+         'dbus' 'glib-networking' 'alsa-lib' 'ffmpeg' 'gcc-libs' 'glibc'
+         'hicolor-icon-theme')
+# wgpu picks its backend at run time: Vulkan first, GL as the fallback. Both
+# loaders come from the driver stack every desktop already has, so neither is
+# a hard dependency of the editor.
+optdepends=('whisper-cpp: on-device auto-captions and transcription'
+            'vulkan-icd-loader: Vulkan compositor backend'
+            'libglvnd: OpenGL compositor backend')
+provides=('concat')
+conflicts=('concat')
+options=('!strip' '!debug')
+# Upstream has no stable release yet. The build workflow publishes a
+# v<version>-alpha.<n> prerelease for every green push to main, so /latest is
+# empty and the newest versioned release is picked by publication date; see
+# pkg.sh. The asset name carries tauri.conf.json's version rather than the
+# tag (every alpha of 0.2.0 ships WolfCut_0.2.0_amd64.deb), so it is resolved
+# through the GitHub API and synced here along with the checksums.
+#
+# pkgver drops the hyphens from the tag (v0.2.0-alpha.15 -> 0.2.0alpha.15).
+# pacman sorts that older than a later plain 0.2.0 (`vercmp 0.2.0alpha.15
+# 0.2.0` is -1, the trailing alphabetic segment loses), so the prereleases
+# upgrade to the eventual stable release on their own and no epoch is needed.
+_tag="v0.2.0-alpha.15"
+_asset="WolfCut_0.2.0_amd64.deb"
+source=("${pkgname}-${pkgver}.deb::https://github.com/jub0t/Concat/releases/download/${_tag}/${_asset}"
+        "LICENSE-${pkgver}::https://raw.githubusercontent.com/jub0t/Concat/${_tag}/LICENSE")
+noextract=("${pkgname}-${pkgver}.deb")
+sha256sums=('1faae2cd2203d3eaeb4b280e1f773e5dbe4be9eb31a485c4b9a9d3fd31e049e4' '66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172')
+
+package() {
+  # /usr/bin/wolfcut-desktop, the desktop entry, the icons and the staged
+  # resources in /usr/lib/WolfCut - the project is mid-rename, the binary and
+  # every path it installs still carry the old name.
+  bsdtar -xOf "$srcdir/${pkgname}-${pkgver}.deb" 'data.tar.*' \
+    | bsdtar -xpf - -C "$pkgdir" ./usr
+
+  # Upstream stages a static ffmpeg/ffprobe pair (180 MB) and whisper-cli
+  # inside the bundle so the app runs on a machine with nothing installed.
+  # Both lookups fall back to PATH when the staged copy is missing (desktop
+  # `use_bundled_ffmpeg`, `transcribe::find_binary`), so the packaged Arch
+  # copies are used instead of shipping a second ffmpeg. Named explicitly
+  # rather than dropping the whole resource directory: anything else upstream
+  # stages there is a resource the app needs, and a rename fails here loudly.
+  rm -r "$pkgdir/usr/lib/WolfCut/ffmpeg" "$pkgdir/usr/lib/WolfCut/whisper"
+  rmdir --ignore-fail-on-non-empty "$pkgdir/usr/lib/WolfCut" "$pkgdir/usr/lib"
+
+  # Tauri emits the entry with an empty Categories=, which keeps the editor
+  # out of the application menu. Same categories upstream's Nix build sets.
+  sed -i 's|^Categories=.*|Categories=AudioVideo;AudioVideoEditing;|' \
+    "$pkgdir/usr/share/applications/WolfCut.desktop"
+
+  # the AUR package is named after the project, the executable after what the
+  # project used to be called - keep it reachable under both
+  ln -s wolfcut-desktop "$pkgdir/usr/bin/concat"
+
+  install -Dm644 "$srcdir/LICENSE-${pkgver}" \
+    "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

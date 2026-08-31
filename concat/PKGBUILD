@@ -1,0 +1,121 @@
+# Maintainer: Felitendo
+# This PKGBUILD is updated automatically:
+# https://github.com/Felitendo/PKGBUILDS
+
+pkgname=concat
+pkgver=0.2.0alpha.15
+pkgrel=1
+pkgdesc="Free and open-source CapCut replacement, a Tauri video editor with a Rust engine"
+arch=('x86_64')
+url="https://github.com/jub0t/Concat"
+license=('MPL-2.0')
+# glib-networking is what gives the webview a TLS backend; alsa-lib is the
+# engine's cpal playback backend; every media operation spawns the ffmpeg
+# pair - see the WOLFCUT_SYSTEM_TOOLS note below. The model downloads carry
+# their own TLS (rustls), so nothing here links openssl.
+depends=('webkit2gtk-4.1' 'gtk3' 'glib2' 'libsoup3' 'gdk-pixbuf2' 'cairo'
+         'dbus' 'glib-networking' 'alsa-lib' 'ffmpeg' 'gcc-libs' 'glibc'
+         'hicolor-icon-theme')
+makedepends=('rust' 'npm' 'pkgconf')
+# wgpu picks its backend at run time: Vulkan first, GL as the fallback. Both
+# loaders come from the driver stack every desktop already has, so neither is
+# a hard dependency of the editor.
+optdepends=('whisper-cpp: on-device auto-captions and transcription'
+            'vulkan-icd-loader: Vulkan compositor backend'
+            'libglvnd: OpenGL compositor backend')
+# !debug: the release profile already sets strip = true, so there is nothing
+# left to split into a debug package.
+# !lto: makepkg's lto puts -flto=auto into CFLAGS, and ring - the crypto
+# behind the model downloads' TLS - compiles hand-written assembly through
+# cc, which comes out as bitcode and links to nothing. Rust's own LTO is set
+# in the release profile and is unaffected.
+options=('!debug' '!lto')
+# Upstream has no stable release yet: the build workflow publishes a
+# v<version>-alpha.<n> prerelease for every green push to main. Only the
+# versioned tags are packaged, and pkgver drops their hyphens
+# (v0.2.0-alpha.15 -> 0.2.0alpha.15), which pacman sorts older than a later
+# plain 0.2.0, so no epoch is needed. See pkg.sh.
+_tag="v0.2.0-alpha.15"
+# sherpa-onnx-sys (the text-to-speech backend) does not build its C++ side:
+# it downloads a prebuilt static-lib archive from its own release page unless
+# it is handed one. Handing it one keeps that binary under makepkg's
+# checksums instead of arriving unverified from a build script. The version
+# follows upstream's Cargo.lock and is synced by pkg.sh.
+_sherpa="1.13.6"
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/jub0t/Concat/archive/refs/tags/${_tag}.tar.gz"
+        "https://github.com/k2-fsa/sherpa-onnx/releases/download/v${_sherpa}/sherpa-onnx-v${_sherpa}-linux-x64-static-lib.tar.bz2")
+noextract=("sherpa-onnx-v${_sherpa}-linux-x64-static-lib.tar.bz2")
+sha256sums=('2b77c892fdd10f1cc93842bd8f0c30504ef17c797ddf386bc100308d175c4c8c' 'fe4968c3cd2ad3dfd1ea925500e5542aef70dd7119847257ffde95d6260cd629')
+
+_srcname="Concat-${_tag#v}"
+
+prepare() {
+  cd "$_srcname/desktop"
+
+  # the frontend toolchain (vite, tsc, tailwind) and the crate registry, both
+  # fetched here so build() runs without the network
+  npm ci --cache "$srcdir/npm-cache"
+
+  export RUSTUP_TOOLCHAIN=stable
+  cd src-tauri
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/^host: //p')"
+}
+
+build() {
+  cd "$_srcname/desktop"
+
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+
+  # build.rs refuses a release build without a staged ffmpeg/whisper-cli,
+  # because a bundle that ships without them is broken when launched from a
+  # desktop file with no PATH to fall back on. A distribution package is the
+  # documented exception: the lookups fall back to PATH, and ffmpeg and
+  # whisper-cpp are packaged for Arch already.
+  export WOLFCUT_SYSTEM_TOOLS=1
+  # the checksummed archive from source[1], instead of a download in build()
+  export SHERPA_ONNX_ARCHIVE_DIR="$srcdir"
+
+  # vite build -> desktop/dist, which tauri-build embeds into the binary
+  npm run build
+
+  cd src-tauri
+  cargo build --release --frozen
+}
+
+package() {
+  cd "$_srcname"
+
+  # same paths the upstream .deb installs: the project is mid-rename and its
+  # executable, desktop entry and icons all still carry the old name
+  install -Dm755 "desktop/src-tauri/target/release/wolfcut-desktop" \
+    "$pkgdir/usr/bin/wolfcut-desktop"
+
+  # the AUR package is named after the project, the executable after what the
+  # project used to be called - keep it reachable under both
+  ln -s wolfcut-desktop "$pkgdir/usr/bin/concat"
+
+  # tauri only writes a desktop entry when it bundles, and the one it puts in
+  # the .deb has an empty Categories=. This is that entry with the categories
+  # upstream's Nix build sets.
+  install -Dm644 /dev/stdin "$pkgdir/usr/share/applications/WolfCut.desktop" <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=WolfCut
+Comment=Free and open source video editor
+Exec=wolfcut-desktop
+Icon=wolfcut-desktop
+Terminal=false
+Categories=AudioVideo;AudioVideoEditing;
+StartupWMClass=wolfcut-desktop
+EOF
+
+  install -Dm644 "desktop/src-tauri/icons/32x32.png" \
+    "$pkgdir/usr/share/icons/hicolor/32x32/apps/wolfcut-desktop.png"
+  install -Dm644 "desktop/src-tauri/icons/128x128.png" \
+    "$pkgdir/usr/share/icons/hicolor/128x128/apps/wolfcut-desktop.png"
+  install -Dm644 "desktop/src-tauri/icons/128x128@2x.png" \
+    "$pkgdir/usr/share/icons/hicolor/256x256@2/apps/wolfcut-desktop.png"
+
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
