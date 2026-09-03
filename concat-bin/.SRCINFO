@@ -1,6 +1,6 @@
 pkgbase = concat-bin
 	pkgdesc = Free and open-source CapCut replacement, a Tauri video editor with a Rust engine (upstream binary)
-	pkgver = 0.2.0alpha.19
+	pkgver = 0.2.0alpha.21
 	pkgrel = 1
 	url = https://github.com/jub0t/Concat
 	arch = x86_64
@@ -23,12 +23,12 @@ pkgbase = concat-bin
 	optdepends = libglvnd: OpenGL compositor backend
 	provides = concat
 	conflicts = concat
-	noextract = concat-bin-0.2.0alpha.19.deb
+	noextract = concat-bin-0.2.0alpha.21.deb
 	options = !strip
 	options = !debug
-	source = concat-bin-0.2.0alpha.19.deb::https://github.com/jub0t/Concat/releases/download/v0.2.0-alpha.19/WolfCut_0.2.0_amd64.deb
-	source = LICENSE-0.2.0alpha.19::https://raw.githubusercontent.com/jub0t/Concat/v0.2.0-alpha.19/LICENSE
-	sha256sums = 50dec0e68fba6ee7db923db88e64930e744f1d660de849d5c171860413441c7d
+	source = concat-bin-0.2.0alpha.21.deb::https://github.com/jub0t/Concat/releases/download/v0.2.0-alpha.21/WolfCut_0.2.0_amd64.deb
+	source = LICENSE-0.2.0alpha.21::https://raw.githubusercontent.com/jub0t/Concat/v0.2.0-alpha.21/LICENSE
+	sha256sums = 1cc6855a2936f7c56898aa58bce69141f7349ee6728cca0f1f8c26063b5f3d3e
 	sha256sums = 0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0
 
 pkgname = concat-bin

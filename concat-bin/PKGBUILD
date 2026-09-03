@@ -3,7 +3,7 @@
 # https://github.com/Felitendo/PKGBUILDS
 
 pkgname=concat-bin
-pkgver=0.2.0alpha.19
+pkgver=0.2.0alpha.21
 pkgrel=1
 pkgdesc="Free and open-source CapCut replacement, a Tauri video editor with a Rust engine (upstream binary)"
 arch=('x86_64')
@@ -36,12 +36,12 @@ options=('!strip' '!debug')
 # pacman sorts that older than a later plain 0.2.0 (`vercmp 0.2.0alpha.15
 # 0.2.0` is -1, the trailing alphabetic segment loses), so the prereleases
 # upgrade to the eventual stable release on their own and no epoch is needed.
-_tag="v0.2.0-alpha.19"
+_tag="v0.2.0-alpha.21"
 _asset="WolfCut_0.2.0_amd64.deb"
 source=("${pkgname}-${pkgver}.deb::https://github.com/jub0t/Concat/releases/download/${_tag}/${_asset}"
         "LICENSE-${pkgver}::https://raw.githubusercontent.com/jub0t/Concat/${_tag}/LICENSE")
 noextract=("${pkgname}-${pkgver}.deb")
-sha256sums=('50dec0e68fba6ee7db923db88e64930e744f1d660de849d5c171860413441c7d' '0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0')
+sha256sums=('1cc6855a2936f7c56898aa58bce69141f7349ee6728cca0f1f8c26063b5f3d3e' '0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0')
 
 package() {
   # /usr/bin/wolfcut-desktop, the desktop entry, the icons and the staged
