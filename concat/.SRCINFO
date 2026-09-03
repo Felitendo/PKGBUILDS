@@ -1,6 +1,6 @@
 pkgbase = concat
 	pkgdesc = Free and open-source CapCut replacement, a Tauri video editor with a Rust engine
-	pkgver = 0.2.0alpha.19
+	pkgver = 0.2.0alpha.21
 	pkgrel = 1
 	url = https://github.com/jub0t/Concat
 	arch = x86_64
@@ -27,9 +27,9 @@ pkgbase = concat
 	noextract = sherpa-onnx-v1.13.6-linux-x64-static-lib.tar.bz2
 	options = !debug
 	options = !lto
-	source = concat-0.2.0alpha.19.tar.gz::https://github.com/jub0t/Concat/archive/refs/tags/v0.2.0-alpha.19.tar.gz
+	source = concat-0.2.0alpha.21.tar.gz::https://github.com/jub0t/Concat/archive/refs/tags/v0.2.0-alpha.21.tar.gz
 	source = https://github.com/k2-fsa/sherpa-onnx/releases/download/v1.13.6/sherpa-onnx-v1.13.6-linux-x64-static-lib.tar.bz2
-	sha256sums = 12b1e4109019d1b9cf309dd390ab1bc2c342a81944b5b873d979a1cd34ac3ece
+	sha256sums = d90957c50750926c590dd5e26711b47f42cbac6c34246007d1cc8ca7210db3dd
 	sha256sums = fe4968c3cd2ad3dfd1ea925500e5542aef70dd7119847257ffde95d6260cd629
 
 pkgname = concat
