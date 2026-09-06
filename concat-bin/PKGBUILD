@@ -3,72 +3,63 @@
 # https://github.com/Felitendo/PKGBUILDS
 
 pkgname=concat-bin
-pkgver=0.2.0alpha.21
+pkgver=0.2.1
 pkgrel=1
-pkgdesc="Free and open-source CapCut replacement, a Tauri video editor with a Rust engine (upstream binary)"
+pkgdesc="Free and open-source CapCut replacement, a video editor with a Rust engine (upstream binary)"
 arch=('x86_64')
 url="https://github.com/jub0t/Concat"
-license=('MPL-2.0')
-# What the binary links against, plus what it reaches for at run time:
-# glib-networking is the webview's TLS backend, and the ffmpeg pair is
-# spawned by every media operation - see the resources note in package().
-# The model downloads carry their own TLS (rustls), so openssl is not needed.
-depends=('webkit2gtk-4.1' 'gtk3' 'glib2' 'libsoup3' 'gdk-pixbuf2' 'cairo'
-         'dbus' 'glib-networking' 'alsa-lib' 'ffmpeg' 'gcc-libs' 'glibc'
-         'hicolor-icon-theme')
-# wgpu picks its backend at run time: Vulkan first, GL as the fallback. Both
-# loaders come from the driver stack every desktop already has, so neither is
-# a hard dependency of the editor.
-optdepends=('whisper-cpp: on-device auto-captions and transcription'
-            'vulkan-icd-loader: Vulkan compositor backend'
-            'libglvnd: OpenGL compositor backend')
+# The binary is Concat under the AGPL; the FFmpeg libraries it ships beside
+# itself are a BtbN GPL build. Both licence texts land in the package: the
+# repository's LICENSE, and upstream's notices file, which is what names the
+# terms of everything linked in - FFmpeg, Slint under its GPL option,
+# whisper.cpp, sherpa-onnx.
+license=('AGPL-3.0-or-later' 'GPL-3.0-or-later')
+# Nothing is spawned at run time any more: FFmpeg is linked, whisper.cpp and
+# sherpa-onnx are compiled in. What is left is what the binary loads - the
+# ALSA backend of cpal, fontconfig and freetype for text, and the windowing
+# libraries winit and the renderer open by name: EGL, Wayland, X11 and
+# xkbcommon. dbus is the XDG portal, which is how the file dialogs and
+# "reveal in file manager" work without a toolkit.
+depends=('alsa-lib' 'fontconfig' 'freetype2' 'libglvnd' 'libxkbcommon'
+         'libxkbcommon-x11' 'libx11' 'libxcursor' 'libxi' 'libxrender'
+         'wayland' 'dbus' 'gcc-libs' 'glibc' 'hicolor-icon-theme')
 provides=('concat')
 conflicts=('concat')
+# !strip: upstream's binary is already stripped, and the FFmpeg libraries
+# beside it are theirs to ship as they are.
 options=('!strip' '!debug')
-# Upstream has no stable release yet. The build workflow publishes a
-# v<version>-alpha.<n> prerelease for every green push to main, so /latest is
-# empty and the newest versioned release is picked by publication date; see
-# pkg.sh. The asset name carries tauri.conf.json's version rather than the
-# tag (every alpha of 0.2.0 ships WolfCut_0.2.0_amd64.deb), so it is resolved
-# through the GitHub API and synced here along with the checksums.
+# Upstream's Linux release is one self-contained folder: the binary, the
+# FFmpeg 8.1 runtime libraries it was linked against, a desktop entry and an
+# icon. The libraries have to come along - the binary needs libavcodec.so.62
+# and Arch is on FFmpeg 9 (libavcodec.so.63) - so the whole folder is
+# installed under /usr/lib/$pkgname, where the binary's own rpath
+# ($ORIGIN/lib) finds them.
 #
-# pkgver drops the hyphens from the tag (v0.2.0-alpha.15 -> 0.2.0alpha.15).
-# pacman sorts that older than a later plain 0.2.0 (`vercmp 0.2.0alpha.15
-# 0.2.0` is -1, the trailing alphabetic segment loses), so the prereleases
-# upgrade to the eventual stable release on their own and no epoch is needed.
-_tag="v0.2.0-alpha.21"
-_asset="WolfCut_0.2.0_amd64.deb"
-source=("${pkgname}-${pkgver}.deb::https://github.com/jub0t/Concat/releases/download/${_tag}/${_asset}"
-        "LICENSE-${pkgver}::https://raw.githubusercontent.com/jub0t/Concat/${_tag}/LICENSE")
-noextract=("${pkgname}-${pkgver}.deb")
-sha256sums=('1cc6855a2936f7c56898aa58bce69141f7349ee6728cca0f1f8c26063b5f3d3e' '0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0')
+# The asset name carries the workspace's version rather than the tag (a
+# prerelease of 0.2.2 ships Concat-0.2.2-linux-x86_64.tar.gz whatever its tag
+# says), so it is resolved through the GitHub API and synced here along with
+# the checksum; see pkg.sh.
+_tag="v0.2.1"
+_asset="Concat-0.2.1-linux-x86_64.tar.gz"
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/jub0t/Concat/releases/download/${_tag}/${_asset}")
+sha256sums=('949c30dee52ba779d5d91777510cfd57580b67467d841bd2957956219886df6f')
 
 package() {
-  # /usr/bin/wolfcut-desktop, the desktop entry, the icons and the staged
-  # resources in /usr/lib/WolfCut - the project is mid-rename, the binary and
-  # every path it installs still carry the old name.
-  bsdtar -xOf "$srcdir/${pkgname}-${pkgver}.deb" 'data.tar.*' \
-    | bsdtar -xpf - -C "$pkgdir" ./usr
+  cd "${_asset%.tar.gz}"
 
-  # Upstream stages a static ffmpeg/ffprobe pair (180 MB) and whisper-cli
-  # inside the bundle so the app runs on a machine with nothing installed.
-  # Both lookups fall back to PATH when the staged copy is missing (desktop
-  # `use_bundled_ffmpeg`, `transcribe::find_binary`), so the packaged Arch
-  # copies are used instead of shipping a second ffmpeg. Named explicitly
-  # rather than dropping the whole resource directory: anything else upstream
-  # stages there is a resource the app needs, and a rename fails here loudly.
-  rm -r "$pkgdir/usr/lib/WolfCut/ffmpeg" "$pkgdir/usr/lib/WolfCut/whisper"
-  rmdir --ignore-fail-on-non-empty "$pkgdir/usr/lib/WolfCut" "$pkgdir/usr/lib"
+  install -Dm755 concat "$pkgdir/usr/lib/$pkgname/concat"
+  # cp, not install: lib/ is the usual set of FFmpeg soname symlinks beside
+  # the real files, and only a copy that preserves them keeps it working.
+  cp -a lib "$pkgdir/usr/lib/$pkgname/lib"
 
-  # Tauri emits the entry with an empty Categories=, which keeps the editor
-  # out of the application menu. Same categories upstream's Nix build sets.
-  sed -i 's|^Categories=.*|Categories=AudioVideo;AudioVideoEditing;|' \
-    "$pkgdir/usr/share/applications/WolfCut.desktop"
+  install -d "$pkgdir/usr/bin"
+  ln -s "/usr/lib/$pkgname/concat" "$pkgdir/usr/bin/concat"
 
-  # the AUR package is named after the project, the executable after what the
-  # project used to be called - keep it reachable under both
-  ln -s wolfcut-desktop "$pkgdir/usr/bin/concat"
+  install -Dm644 concat.desktop "$pkgdir/usr/share/applications/concat.desktop"
+  install -Dm644 concat.png \
+    "$pkgdir/usr/share/icons/hicolor/256x256/apps/concat.png"
 
-  install -Dm644 "$srcdir/LICENSE-${pkgver}" \
-    "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 THIRD_PARTY_NOTICES.md \
+    "$pkgdir/usr/share/licenses/$pkgname/THIRD_PARTY_NOTICES.md"
 }

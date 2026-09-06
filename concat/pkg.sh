@@ -1,12 +1,12 @@
 # concat - Concat (https://github.com/jub0t/Concat), a free and open-source
-# CapCut replacement: a Tauri 2 shell around a Rust video engine.
+# CapCut replacement.
 #
-# Source package: the PKGBUILD builds the Tauri binary from the release
-# tarball - the same executable upstream wraps into the .deb that concat-bin
+# Source package: the PKGBUILD builds the editor from the release tarball -
+# the same binary upstream ships in the Linux tarball that concat-bin
 # repackages. Upstream's flake.nix is the reference for what that needs, and
-# this follows it: JS toolchain plus cargo, and WOLFCUT_SYSTEM_TOOLS=1 to opt
-# out of staging a private ffmpeg/whisper-cli into the bundle, because Arch
-# packages both and the app falls back to PATH.
+# this follows it: cargo, cmake and clang, the system FFmpeg, and Slint's
+# FemtoVG-over-wgpu renderer instead of the default Skia one, because
+# skia-bindings downloads its binaries from the build script.
 #
 # sherpa-onnx-sys, the text-to-speech backend, ships no C++ build: its build
 # script downloads a prebuilt static-lib archive from the sherpa-onnx release
@@ -16,23 +16,22 @@
 # upstream's Cargo.lock, so refresh_checksums() reads it from the tarball and
 # syncs the _sherpa variable in the PKGBUILD.
 #
-# Release/version handling is identical to concat-bin: every upstream release
-# is a "v<version>-alpha.<n>" prerelease published on a push to main, the
-# release list is ordered by creation rather than by version (v0.2.0-alpha.10
-# sits between alpha.2 and alpha.1), so the newest is picked by publication
-# date, and pkgver drops the hyphens - see concat-bin/pkg.sh.
+# Release/version handling is identical to concat-bin: the release list is
+# ordered by creation rather than by version, so the newest is picked by
+# publication date, only tags that start with a version count, and pkgver
+# drops the hyphens - see concat-bin/pkg.sh.
 
 # Not on the AUR yet. concat-git goes up first; these two follow once the
-# alpha-per-push release cadence has been lived with for a while - upstream
-# publishes several a day, and each one is an AUR push (and, for concat, a
-# full Rust build in CI). Flip this to true to publish; until then the
-# PKGBUILD is still kept current and test-built here.
+# release cadence has been lived with for a while - upstream published
+# several alphas a day before 0.2.1, and each one is an AUR push (and, for
+# concat, a full Rust build in CI). Flip this to true to publish; until then
+# the PKGBUILD is still kept current and test-built here.
 AUR_PUBLISH=false
 
 UPSTREAM_REPO="jub0t/Concat"
 
 # Installed in CI (pacman) before the makepkg test build.
-BUILD_DEPS=(rust npm webkit2gtk-4.1 gtk3 libsoup3 alsa-lib)
+BUILD_DEPS=(rust cmake clang pkgconf ffmpeg alsa-lib fontconfig freetype2)
 
 latest_tag() {
   gh api "repos/$UPSTREAM_REPO/releases?per_page=100" \
@@ -70,8 +69,12 @@ refresh_checksums() {
   fi
 
   sha_src="$(sha256sum "$tarball" | cut -d' ' -f1)"
-  sherpa="$(tar -xOzf "$tarball" --wildcards '*/desktop/src-tauri/Cargo.lock' \
-    | grep -A2 '^name = "sherpa-onnx-sys"' | sed -n 's/^version = "\(.*\)"/\1/p')"
+  # `|| true`, so that a tree that has moved the lockfile or dropped the crate
+  # is reported below instead of ending the run on grep's exit status with
+  # nothing printed.
+  sherpa="$(tar -xOzf "$tarball" --wildcards '*/engine/Cargo.lock' \
+    | grep -A2 '^name = "sherpa-onnx-sys"' | sed -n 's/^version = "\(.*\)"/\1/p' \
+    || true)"
   rm -f "$tarball"
 
   if [[ -z "$sherpa" ]]; then

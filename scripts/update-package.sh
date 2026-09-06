@@ -34,7 +34,18 @@ BUILD_DEPS=()
 AUR_PUBLISH=true
 source "$pkg/pkg.sh"
 
-ver="$(latest_version || true)"
+# A package whose upstream release channel is temporarily out of order - a
+# "latest" pointer that has stopped pointing at a release - can return 75
+# (EX_TEMPFAIL) from latest_version instead of printing one. There is nothing
+# to update while that lasts and nothing wrong with the package, so the run
+# warns and stops rather than going red, and the next one picks it up.
+rc=0
+ver="$(latest_version)" || rc=$?
+if [[ "$rc" -eq 75 ]]; then
+  echo "::warning::$pkg: upstream has no current release to track right now -" \
+       "leaving the package as it is, the next run tries again."
+  exit 0
+fi
 if [[ -z "$ver" || "$ver" == "null" ]]; then
   echo "::error::$pkg: could not determine the latest upstream version"
   exit 1

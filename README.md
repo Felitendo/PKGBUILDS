@@ -43,8 +43,8 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `cachy-auto-update` | [Felitendo/cachy-auto-update](https://github.com/Felitendo/cachy-auto-update) — unattended background updates for CachyOS (pacman, AUR, Flatpak, AppImages) | *built from source* | [cachy-auto-update](https://aur.archlinux.org/packages/cachy-auto-update) |
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | AppImage | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
 | `chromium-widevine-helper` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | *no build step* | [chromium-widevine-helper](https://aur.archlinux.org/packages/chromium-widevine-helper) |
-| `concat` | [jub0t/Concat](https://github.com/jub0t/Concat) — free and open-source CapCut replacement (Tauri 2 shell around a Rust video engine) | *built from source* | *not published yet* |
-| `concat-bin` | [jub0t/Concat](https://github.com/jub0t/Concat) — prebuilt release of `concat` | `.deb` | *not published yet* |
+| `concat` | [jub0t/Concat](https://github.com/jub0t/Concat) — free and open-source CapCut replacement (a Slint window over a Rust video engine) | *built from source* | *not published yet* |
+| `concat-bin` | [jub0t/Concat](https://github.com/jub0t/Concat) — prebuilt release of `concat` | self-contained tarball | *not published yet* |
 | `concat-git` | [jub0t/Concat](https://github.com/jub0t/Concat) — `main` branch of `concat` | *built from source* | [concat-git](https://aur.archlinux.org/packages/concat-git) |
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | tarball | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
