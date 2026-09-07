@@ -48,6 +48,7 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `concat-git` | [jub0t/Concat](https://github.com/jub0t/Concat) — `main` branch of `concat` | *built from source* | [concat-git](https://aur.archlinux.org/packages/concat-git) |
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | tarball | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
+| `kitty-tune-bin` | [alan7383/KittyTuneDesktop](https://github.com/alan7383/KittyTuneDesktop) — SoundCloud and YouTube music player (Kotlin/Compose Multiplatform) | `.deb` | [kitty-tune-bin](https://aur.archlinux.org/packages/kitty-tune-bin) |
 | `lunar-client-bin` | [lunarclient.com](https://lunarclient.com) — Minecraft PvP modpack launcher | AppImage | [lunar-client-bin](https://aur.archlinux.org/packages/lunar-client-bin) |
 | `middleclick-autoscroll` | [Felitendo/middleclick-autoscroll](https://github.com/Felitendo/middleclick-autoscroll) — enables middle-click autoscroll in every application that supports it | *built from source* | [middleclick-autoscroll](https://aur.archlinux.org/packages/middleclick-autoscroll) |
 | `modrinth-app-bin` | [modrinth/code](https://github.com/modrinth/code) — Minecraft mod manager/launcher | `.deb` | [modrinth-app-bin](https://aur.archlinux.org/packages/modrinth-app-bin) |
