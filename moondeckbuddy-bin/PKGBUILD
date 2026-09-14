@@ -1,0 +1,68 @@
+# Maintainer: Felitendo
+# This PKGBUILD is updated automatically:
+# https://github.com/Felitendo/PKGBUILDS
+
+pkgname=moondeckbuddy-bin
+pkgver=1.10.0
+pkgrel=1
+pkgdesc="Host companion that lets the MoonDeck Steam Deck plugin control Steam and the PC (upstream AppImage)"
+arch=('x86_64')
+url="https://github.com/FrogTheFrog/moondeck-buddy"
+license=('LGPL-3.0-only')
+# the AppImage bundles Qt6, OpenSSL, glib, libproc2 and the xcb stack; these
+# are what is left over (bash runs upstream's AppRun)
+depends=('bash' 'e2fsprogs' 'fontconfig' 'freetype2' 'glibc'
+         'hicolor-icon-theme' 'libgcc' 'libglvnd' 'libgpg-error' 'libstdc++'
+         'libx11' 'libxcb' 'zlib')
+provides=('moondeckbuddy')
+conflicts=('moondeckbuddy' 'moondeckbuddy-appimage')
+options=('!strip' '!debug')
+source=("${pkgname}-${pkgver}.AppImage::https://github.com/FrogTheFrog/moondeck-buddy/releases/download/v${pkgver}/MoonDeckBuddy-${pkgver}-x86_64.AppImage"
+        "LICENSE-${pkgver}::https://raw.githubusercontent.com/FrogTheFrog/moondeck-buddy/v${pkgver}/LICENSE")
+noextract=("${pkgname}-${pkgver}.AppImage")
+sha256sums=('51960ec27f897818e10f6e06a3c8994eebfd05c58c9c51ed89cad5b53caa5a46' 'a5681bf9b05db14d86776930017c647ad9e6e56ff6bbcfdf21e5848288dfaf1b')
+
+prepare() {
+  chmod +x "$srcdir/${pkgname}-${pkgver}.AppImage"
+  "$srcdir/${pkgname}-${pkgver}.AppImage" --appimage-extract > /dev/null
+}
+
+package() {
+  local _root="$srcdir/squashfs-root"
+
+  # upstream's AppImage payload, installed unchanged apart from the top-level
+  # icon/desktop symlinks only the AppImage runtime uses
+  install -d "$pkgdir/opt/$pkgname"
+  cp -a "$_root/." "$pkgdir/opt/$pkgname/"
+  rm -f "$pkgdir/opt/$pkgname/"{.DirIcon,MoonDeckBuddy.desktop,moondeckbuddy.png}
+  # the bundled libraries' copyright files are world-writable in the image,
+  # and linuxdeploy leaves a few empty directories behind
+  chmod -R go-w "$pkgdir/opt/$pkgname"
+  find "$pkgdir/opt/$pkgname" -type d -empty -delete
+
+  # The AppRun forces the bundled xcb platform plugin (there is no Wayland one
+  # in the bundle), so the binaries go through it. Buddy writes its own path
+  # into the autostart entry and systemd user service it creates and takes it
+  # from $APPIMAGE when set - pointing that at the wrapper keeps autostart on
+  # the AppRun too, just as the AppRun does with the AppImage's own path.
+  install -d "$pkgdir/usr/bin"
+  local _bin
+  for _bin in MoonDeckBuddy MoonDeckStream; do
+    cat > "$pkgdir/usr/bin/$_bin" << EOF
+#!/bin/sh
+APPIMAGE=/usr/bin/$_bin exec /opt/$pkgname/AppRun --exec $_bin "\$@"
+EOF
+    chmod 755 "$pkgdir/usr/bin/$_bin"
+  done
+
+  install -Dm644 "$_root/usr/share/applications/MoonDeckBuddy.desktop" \
+    "$pkgdir/usr/share/applications/MoonDeckBuddy.desktop"
+  local _size
+  for _size in 16 32 64 128 256; do
+    install -Dm644 "$_root/usr/share/icons/hicolor/${_size}x${_size}/apps/moondeckbuddy.png" \
+      "$pkgdir/usr/share/icons/hicolor/${_size}x${_size}/apps/moondeckbuddy.png"
+  done
+
+  install -Dm644 "$srcdir/LICENSE-${pkgver}" \
+    "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
