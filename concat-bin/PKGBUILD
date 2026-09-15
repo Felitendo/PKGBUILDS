@@ -3,7 +3,7 @@
 # https://github.com/Felitendo/PKGBUILDS
 
 pkgname=concat-bin
-pkgver=0.2.1
+pkgver=0.2.2
 pkgrel=1
 pkgdesc="Free and open-source CapCut replacement, a video editor with a Rust engine (upstream binary)"
 arch=('x86_64')
@@ -39,10 +39,10 @@ options=('!strip' '!debug')
 # prerelease of 0.2.2 ships Concat-0.2.2-linux-x86_64.tar.gz whatever its tag
 # says), so it is resolved through the GitHub API and synced here along with
 # the checksum; see pkg.sh.
-_tag="v0.2.1"
-_asset="Concat-0.2.1-linux-x86_64.tar.gz"
+_tag="v0.2.2"
+_asset="Concat-0.2.2-linux-x86_64.tar.gz"
 source=("${pkgname}-${pkgver}.tar.gz::https://github.com/jub0t/Concat/releases/download/${_tag}/${_asset}")
-sha256sums=('949c30dee52ba779d5d91777510cfd57580b67467d841bd2957956219886df6f')
+sha256sums=('9151e36948773b3d0d02256f1a8ee44580eec5d1fe48fdb31c2da3b2250a39ff')
 
 package() {
   cd "${_asset%.tar.gz}"

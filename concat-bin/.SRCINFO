@@ -1,6 +1,6 @@
 pkgbase = concat-bin
 	pkgdesc = Free and open-source CapCut replacement, a video editor with a Rust engine (upstream binary)
-	pkgver = 0.2.1
+	pkgver = 0.2.2
 	pkgrel = 1
 	url = https://github.com/jub0t/Concat
 	arch = x86_64
@@ -25,7 +25,7 @@ pkgbase = concat-bin
 	conflicts = concat
 	options = !strip
 	options = !debug
-	source = concat-bin-0.2.1.tar.gz::https://github.com/jub0t/Concat/releases/download/v0.2.1/Concat-0.2.1-linux-x86_64.tar.gz
-	sha256sums = 949c30dee52ba779d5d91777510cfd57580b67467d841bd2957956219886df6f
+	source = concat-bin-0.2.2.tar.gz::https://github.com/jub0t/Concat/releases/download/v0.2.2/Concat-0.2.2-linux-x86_64.tar.gz
+	sha256sums = 9151e36948773b3d0d02256f1a8ee44580eec5d1fe48fdb31c2da3b2250a39ff
 
 pkgname = concat-bin
