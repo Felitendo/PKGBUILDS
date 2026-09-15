@@ -1,6 +1,6 @@
 pkgbase = concat
 	pkgdesc = Free and open-source CapCut replacement, a video editor with a Rust engine
-	pkgver = 0.2.1
+	pkgver = 0.2.2
 	pkgrel = 1
 	url = https://github.com/jub0t/Concat
 	arch = x86_64
@@ -29,9 +29,9 @@ pkgbase = concat
 	noextract = sherpa-onnx-v1.13.7-linux-x64-static-lib.tar.bz2
 	options = !debug
 	options = !lto
-	source = concat-0.2.1.tar.gz::https://github.com/jub0t/Concat/archive/refs/tags/v0.2.1.tar.gz
+	source = concat-0.2.2.tar.gz::https://github.com/jub0t/Concat/archive/refs/tags/v0.2.2.tar.gz
 	source = https://github.com/k2-fsa/sherpa-onnx/releases/download/v1.13.7/sherpa-onnx-v1.13.7-linux-x64-static-lib.tar.bz2
-	sha256sums = 3dfe1c7854b543c0bf86e239b1f02c65b14ba9b77c78ad8aa94026eeee6ebb9e
+	sha256sums = 2534fa8eac80b42a672a566d7f9a9965a8f6358b66dc18a9c7ae1b5bbdd5d2b6
 	sha256sums = d1be7a69ac2b30120058d8302e624239a3064085383cfa47994a14fdc44c32d6
 
 pkgname = concat
