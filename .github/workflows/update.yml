@@ -1,10 +1,20 @@
 name: Update AUR packages
+run-name: ${{ inputs.package && format('Update {0}', inputs.package) || 'Update AUR packages' }}
 
 on:
   schedule:
     # every 6 hours (offset from the full hour to avoid GitHub's load spikes)
     - cron: '37 */6 * * *'
   workflow_dispatch:
+    inputs:
+      package:
+        # One package instead of all of them: a full run builds every package
+        # in turn, and one near the end of the list waits behind every source
+        # build before it gets its turn.
+        description: 'Only update this package directory (empty: all packages)'
+        type: string
+        required: false
+        default: ''
   push:
     branches: [main]
     paths:
@@ -30,8 +40,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: list
+        env:
+          PACKAGE: ${{ inputs.package }}
         run: |
-          echo "packages=$(ls -d */PKGBUILD 2>/dev/null | xargs -r -n1 dirname | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
+          if [ -n "$PACKAGE" ]; then
+            if [ ! -f "$PACKAGE/PKGBUILD" ]; then
+              echo "::error::there is no package directory named '$PACKAGE'"
+              exit 1
+            fi
+            echo "packages=$(jq -cn --arg p "$PACKAGE" '[$p]')" >> "$GITHUB_OUTPUT"
+          else
+            echo "packages=$(ls -d */PKGBUILD 2>/dev/null | xargs -r -n1 dirname | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
+          fi
 
   update:
     needs: discover
