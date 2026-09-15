@@ -23,7 +23,7 @@ UPSTREAM_REPO="Felitendo/Modrinth-Enhanced"
 
 # Installed in CI (pacman) before the makepkg test build. makepkg runs with
 # -d there, so the libraries the binary links against are listed too.
-BUILD_DEPS=(rust git jdk17-openjdk node-gyp nodejs npm pnpm webkit2gtk-4.1 gtk3 libsoup3)
+BUILD_DEPS=(rust git jdk17-openjdk node-gyp nodejs npm pnpm webkit2gtk-4.1 gtk3 libsoup3 libdrm)
 
 latest_version() {
   gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//; s/-/.r/'
@@ -52,7 +52,11 @@ refresh_checksums() {
     | sha256sum | cut -d' ' -f1)"
   sha_upstream="$(curl -sfL "https://github.com/modrinth/code/archive/refs/tags/$upstream.tar.gz" \
     | sha256sum | cut -d' ' -f1)"
+  # vblank-shim.c and modrinth-enhanced.sh ship with the package, as symlinks
+  # to modrinth-enhanced-bin's copies; they come before the optional base tag
   sums="'$sha_patches' '$sha_upstream'"
+  sums+=" '$(sha256sum "$(dirname "$pkgbuild")/vblank-shim.c" | cut -d' ' -f1)'"
+  sums+=" '$(sha256sum "$(dirname "$pkgbuild")/modrinth-enhanced.sh" | cut -d' ' -f1)'"
   if [[ "$base" != "$upstream" ]]; then
     sums+=" '$(curl -sfL "https://github.com/modrinth/code/archive/refs/tags/$base.tar.gz" \
       | sha256sum | cut -d' ' -f1)'"

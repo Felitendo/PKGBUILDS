@@ -2,9 +2,10 @@
 # the Modrinth App (Tauri) with a series of patches applied: no ads, no
 # telemetry, offline and Ely.by accounts, Linux fixes.
 #
-# Upstream publishes a bundled .deb per release, so there is no build step
-# here: on a new version only pkgver, the tag, the asset name and the checksum
-# are refreshed and the PKGBUILD repackages the deb directly.
+# Upstream publishes a bundled .deb per release, so the app is not built here:
+# on a new version only pkgver, the tag, the asset name and the checksums are
+# refreshed and the PKGBUILD repackages the deb directly. The only thing built
+# is vblank-shim.c, which ships with this package (see the PKGBUILD).
 #
 # Releases are tagged after the Modrinth App release they are built on
 # (v0.21.2). When the patches change without a new Modrinth App release, the
@@ -18,6 +19,9 @@
 
 UPSTREAM_REPO="Felitendo/Modrinth-Enhanced"
 
+# Installed in CI before the makepkg test build, for the shim's headers.
+BUILD_DEPS=(glib2 libdrm)
+
 latest_version() {
   gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//; s/-/.r/'
 }
@@ -25,7 +29,11 @@ latest_version() {
 # refresh_checksums <version> <pkgbuild-path>
 refresh_checksums() {
   local ver="$1" pkgbuild="$2"
-  local tag="v${ver/.r/-}" asset sha
+  local tag="v${ver/.r/-}" dir asset sha sha_shim sha_script
+
+  dir="$(dirname "$pkgbuild")"
+  sha_shim="$(sha256sum "$dir/vblank-shim.c" | cut -d' ' -f1)"
+  sha_script="$(sha256sum "$dir/modrinth-enhanced.sh" | cut -d' ' -f1)"
 
   asset="$(gh api "repos/$UPSTREAM_REPO/releases/tags/$tag" \
     --jq '.assets[].name | select(endswith("_amd64.deb"))')"
@@ -40,6 +48,6 @@ refresh_checksums() {
   sed -i \
     -e "s|^_tag=.*|_tag=\"$tag\"|" \
     -e "s|^_asset=.*|_asset=\"$asset\"|" \
-    -e "s|^sha256sums=.*|sha256sums=('$sha')|" \
+    -e "s|^sha256sums=.*|sha256sums=('$sha' '$sha_shim' '$sha_script')|" \
     "$pkgbuild"
 }

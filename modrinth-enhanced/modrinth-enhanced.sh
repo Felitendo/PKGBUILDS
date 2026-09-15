@@ -1,0 +1,1 @@
+../modrinth-enhanced-bin/modrinth-enhanced.sh
