@@ -38,7 +38,7 @@ jobs:
     outputs:
       packages: ${{ steps.list.outputs.packages }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: list
         env:
           PACKAGE: ${{ inputs.package }}
@@ -71,7 +71,7 @@ jobs:
       - name: Install base tooling
         run: pacman -Syu --noconfirm --needed git openssh github-cli jq zstd
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Update ${{ matrix.package }}
         env:

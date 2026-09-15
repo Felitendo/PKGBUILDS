@@ -1,10 +1,14 @@
 # wiiudownloader-bin - WiiUDownloader
-# (https://github.com/Xpl0itU/WiiUDownloader), a Go + GTK3 downloader for
-# Wii U titles from Nintendo's official servers.
+# (https://github.com/Xpl0itU/WiiUDownloader), a Go + GTK4/libadwaita
+# downloader for Wii U titles from Nintendo's official servers.
 #
 # Upstream publishes an AppImage per release, which the PKGBUILD unpacks and
 # installs into /opt - so there is no build step here, only pkgver and the
 # checksum are refreshed on a new version.
+#
+# Since v3.0 the AppImage is built with sharun (pkgforge-dev/Anylinux-AppImages)
+# and bundles everything down to glibc, which is why the PKGBUILD depends on
+# little more than a shell. Icon and desktop entry sit at the top of the image.
 
 UPSTREAM_REPO="Xpl0itU/WiiUDownloader"
 
