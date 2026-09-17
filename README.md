@@ -115,4 +115,6 @@ Then create a directory named after the AUR package containing:
 
 The workflow discovers package directories automatically. Trigger a run
 manually via *Actions → Update AUR packages → Run workflow* to publish it
-immediately.
+immediately. To update only some packages, enter their directory names,
+separated by commas (e.g. `concat, plezy-bin`); leave the field empty to update
+all of them.

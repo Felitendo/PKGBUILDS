@@ -8,10 +8,10 @@ on:
   workflow_dispatch:
     inputs:
       package:
-        # One package instead of all of them: a full run builds every package
-        # in turn, and one near the end of the list waits behind every source
-        # build before it gets its turn.
-        description: 'Only update this package directory (empty: all packages)'
+        # A few packages instead of all of them: a full run builds every
+        # package in turn, and one near the end of the list waits behind every
+        # source build before it gets its turn.
+        description: 'Only update these package directories, comma-separated (empty: all packages)'
         type: string
         required: false
         default: ''
@@ -41,14 +41,28 @@ jobs:
       - uses: actions/checkout@v7
       - id: list
         env:
-          PACKAGE: ${{ inputs.package }}
+          PACKAGES: ${{ inputs.package }}
         run: |
-          if [ -n "$PACKAGE" ]; then
-            if [ ! -f "$PACKAGE/PKGBUILD" ]; then
-              echo "::error::there is no package directory named '$PACKAGE'"
+          if [ -n "$PACKAGES" ]; then
+            # split on commas, trim, drop empty entries and duplicates, keep
+            # the given order (it is the build order)
+            packages=$(jq -cn --arg s "$PACKAGES" '
+              $s | split(",") | map(gsub("^\\s+|\\s+$"; "") | select(. != ""))
+              | reduce .[] as $p ([]; if any(.[]; . == $p) then . else . + [$p] end)')
+            if [ "$packages" = "[]" ]; then
+              echo "::error::no package name in '$PACKAGES'"
               exit 1
             fi
-            echo "packages=$(jq -cn --arg p "$PACKAGE" '[$p]')" >> "$GITHUB_OUTPUT"
+            # report every unknown name at once, not just the first
+            missing=0
+            while IFS= read -r p; do
+              if [ ! -f "$p/PKGBUILD" ]; then
+                echo "::error::there is no package directory named '$p'"
+                missing=1
+              fi
+            done < <(jq -r '.[]' <<< "$packages")
+            [ "$missing" = 0 ] || exit 1
+            echo "packages=$packages" >> "$GITHUB_OUTPUT"
           else
             echo "packages=$(ls -d */PKGBUILD 2>/dev/null | xargs -r -n1 dirname | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
           fi
