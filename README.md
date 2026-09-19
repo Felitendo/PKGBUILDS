@@ -62,6 +62,7 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `plezy-bin` | [edde746/plezy](https://github.com/edde746/plezy) — Plex, Jellyfin and Emby client (Flutter); the source package [lives in `extra`](https://archlinux.org/packages/extra/x86_64/plezy/) | `.deb` | [plezy-bin](https://aur.archlinux.org/packages/plezy-bin) |
 | `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | tarball | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
 | `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool | self-contained tarball | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
+| `tenzen-studio-bin` | [tenzen.studio](https://tenzen.studio) — Tenzen Studio, screen recorder and editor for product demos (proprietary Electron app) | Flatpak bundle | [tenzen-studio-bin](https://aur.archlinux.org/packages/tenzen-studio-bin) |
 | `timetable` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis) — "Timetable", a GTK4 + LibAdwaita client for WebUntis | *built from source* | [timetable](https://aur.archlinux.org/packages/timetable) |
 | `vacuumtube-bin` | [shy1132/VacuumTube](https://github.com/shy1132/VacuumTube) — YouTube Leanback (TV UI) with built-in adblocker | `.deb` | [vacuumtube-bin](https://aur.archlinux.org/packages/vacuumtube-bin) |
 | `waydroid-helper-bin` | [ayasa520/waydroid-helper](https://github.com/ayasa520/waydroid-helper) — GTK4 GUI for Waydroid configuration and extensions | AppImage | [waydroid-helper-bin](https://aur.archlinux.org/packages/waydroid-helper-bin) |
@@ -104,7 +105,8 @@ Then create a directory named after the AUR package containing:
     it via the GitHub API here and sync an `_asset` variable in the `PKGBUILD`
     too.
   - `BUILD_DEPS` — optional array of Arch packages to install before the CI
-    test build; only needed by packages that build from source.
+    test build; only needed by packages that build from source or need a
+    tool to unpack upstream's deliverable (`tenzen-studio-bin`: `ostree`).
   - `AUR_PUBLISH` — optional; set to `false` to keep a package out of the AUR
     while it is still being prepared. Everything else still runs, so the
     `PKGBUILD` is kept current and test-built; only the publishing waits.
