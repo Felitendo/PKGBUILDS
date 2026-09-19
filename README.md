@@ -98,7 +98,11 @@ Then create a directory named after the AUR package containing:
   single line.
 - **`pkg.sh`** — bash sourced by [scripts/update-package.sh](scripts/update-package.sh),
   defining:
-  - `latest_version` — prints the latest upstream version, no `v` prefix.
+  - `latest_version` — prints the latest upstream version, no `v` prefix. A
+    channel that has stopped pointing at a release can return `75`
+    (`EX_TEMPFAIL`) instead: the run then warns, keeps the version the
+    `PKGBUILD` has and carries on, so packaging changes still reach the AUR
+    (`fluxer-bin`).
   - `refresh_checksums <version> <pkgbuild-path>` — updates the `sha256sums*`
     lines for that version. If the asset name carries build metadata that does
     not follow from `pkgver` (see `snapx-bin`, `faugus-launcher-bin`), resolve

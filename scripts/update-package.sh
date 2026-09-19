@@ -34,26 +34,34 @@ BUILD_DEPS=()
 AUR_PUBLISH=true
 source "$pkg/pkg.sh"
 
+oldver="$(grep -Po '^pkgver=\K.*' "$pkg/PKGBUILD")"
+oldrel="$(grep -Po '^pkgrel=\K.*' "$pkg/PKGBUILD")"
+
 # A package whose upstream release channel is temporarily out of order - a
 # "latest" pointer that has stopped pointing at a release - can return 75
 # (EX_TEMPFAIL) from latest_version instead of printing one. There is nothing
-# to update while that lasts and nothing wrong with the package, so the run
-# warns and stops rather than going red, and the next one picks it up.
+# to update to while that lasts and nothing wrong with the package, so the run
+# warns rather than going red, and the next one tries again.
+#
+# It carries on with the version the PKGBUILD already has instead of stopping:
+# everything below is about the packaging, not the version, and a package
+# cannot be fixed at all if a stalled upstream channel also blocks the AUR
+# sync - which is exactly what happened to fluxer-bin, whose stable channel
+# has been serving canary builds since 0.0.8.
 rc=0
 ver="$(latest_version)" || rc=$?
 if [[ "$rc" -eq 75 ]]; then
   echo "::warning::$pkg: upstream has no current release to track right now -" \
-       "leaving the package as it is, the next run tries again."
-  exit 0
+       "leaving the version alone, the next run tries again."
+  ver="$oldver"
 fi
 if [[ -z "$ver" || "$ver" == "null" ]]; then
   echo "::error::$pkg: could not determine the latest upstream version"
   exit 1
 fi
-echo "$pkg: latest upstream version is $ver"
-
-oldver="$(grep -Po '^pkgver=\K.*' "$pkg/PKGBUILD")"
-oldrel="$(grep -Po '^pkgrel=\K.*' "$pkg/PKGBUILD")"
+if [[ "$rc" -ne 75 ]]; then
+  echo "$pkg: latest upstream version is $ver"
+fi
 
 ### 2: bring the PKGBUILD up to date ########################################
 
