@@ -27,13 +27,6 @@
 # 0.2.2` is -1), so prereleases upgrade to the eventual release on their own
 # and no epoch is needed.
 
-# Not on the AUR yet. concat-git goes up first; these two follow once the
-# release cadence has been lived with for a while - upstream published
-# several alphas a day before 0.2.1, and each one is an AUR push (and, for
-# concat, a full Rust build in CI). Flip this to true to publish; until then
-# the PKGBUILD is still kept current and test-built here.
-AUR_PUBLISH=false
-
 UPSTREAM_REPO="jub0t/Concat"
 
 # newest published release whose tag looks like a version
