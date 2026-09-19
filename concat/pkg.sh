@@ -24,7 +24,7 @@
 UPSTREAM_REPO="jub0t/Concat"
 
 # Installed in CI (pacman) before the makepkg test build.
-BUILD_DEPS=(rust cmake clang pkgconf ffmpeg alsa-lib fontconfig freetype2)
+BUILD_DEPS=(rust cmake clang pkgconf ffmpeg onnxruntime-cpu alsa-lib fontconfig freetype2)
 
 latest_tag() {
   gh api "repos/$UPSTREAM_REPO/releases?per_page=100" \
@@ -65,13 +65,13 @@ refresh_checksums() {
   # `|| true`, so that a tree that has moved the lockfile or dropped the crate
   # is reported below instead of ending the run on grep's exit status with
   # nothing printed.
-  sherpa="$(tar -xOzf "$tarball" --wildcards '*/engine/Cargo.lock' \
+  sherpa="$(tar -xOzf "$tarball" --wildcards '*/src/Cargo.lock' \
     | grep -A2 '^name = "sherpa-onnx-sys"' | sed -n 's/^version = "\(.*\)"/\1/p' \
     || true)"
   rm -f "$tarball"
 
   if [[ -z "$sherpa" ]]; then
-    echo "could not read the sherpa-onnx-sys version from $tag's Cargo.lock" >&2
+    echo "could not read the sherpa-onnx-sys version from $tag's src/Cargo.lock" >&2
     return 1
   fi
 

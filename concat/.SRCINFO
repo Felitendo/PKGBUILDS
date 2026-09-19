@@ -10,6 +10,7 @@ pkgbase = concat
 	makedepends = clang
 	makedepends = pkgconf
 	depends = ffmpeg
+	depends = onnxruntime
 	depends = alsa-lib
 	depends = fontconfig
 	depends = freetype2

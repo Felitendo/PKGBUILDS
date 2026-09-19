@@ -20,7 +20,7 @@
 # part of the test build, so the committed snapshot follows along by itself.
 
 # Installed in CI (pacman) before the makepkg test build.
-BUILD_DEPS=(rust cmake clang pkgconf git ffmpeg alsa-lib fontconfig freetype2)
+BUILD_DEPS=(rust cmake clang pkgconf git ffmpeg onnxruntime-cpu alsa-lib fontconfig freetype2)
 
 latest_version() {
   grep -Po '^pkgver=\K.*' "$(dirname "${BASH_SOURCE[0]}")/PKGBUILD"
