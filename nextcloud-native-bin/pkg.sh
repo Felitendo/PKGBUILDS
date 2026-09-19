@@ -1,4 +1,4 @@
-# nextcloud-native-bin - Nextcloud Native (https://github.com/Obiente/nc-native),
+# nextcloud-native-bin - Nextcloud Native (https://github.com/Obiente/native),
 # an adaptive native Nextcloud client built with Kotlin/Compose Multiplatform.
 #
 # Upstream publishes a jpackage .deb (and .rpm) per release, so there is no
@@ -17,7 +17,7 @@
 # is -1, the trailing alphabetic segment loses), so the prereleases upgrade to
 # the eventual stable release on their own and no epoch is needed.
 
-UPSTREAM_REPO="Obiente/nc-native"
+UPSTREAM_REPO="Obiente/native"
 
 # newest release whose tag looks like a version (skips nightly-*/channel-*)
 latest_tag() {

@@ -1,4 +1,4 @@
-# nextcloud-native-git - Nextcloud Native (https://github.com/Obiente/nc-native)
+# nextcloud-native-git - Nextcloud Native (https://github.com/Obiente/native)
 # built from the main branch. Same build as nextcloud-native, see that package
 # for why the Linux desktop image needs nothing but JDK 21.
 #

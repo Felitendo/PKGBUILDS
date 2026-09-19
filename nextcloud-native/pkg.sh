@@ -1,4 +1,4 @@
-# nextcloud-native - Nextcloud Native (https://github.com/Obiente/nc-native),
+# nextcloud-native - Nextcloud Native (https://github.com/Obiente/native),
 # an adaptive native Nextcloud client built with Kotlin/Compose Multiplatform.
 #
 # Source package: the PKGBUILD builds :ui:createDistributable from the release
@@ -17,7 +17,7 @@
 # older than a later plain 0.1.0, so no epoch is needed. See
 # nextcloud-native-bin/pkg.sh.
 
-UPSTREAM_REPO="Obiente/nc-native"
+UPSTREAM_REPO="Obiente/native"
 
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(jdk21-openjdk python)
