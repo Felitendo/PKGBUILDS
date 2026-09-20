@@ -46,8 +46,8 @@ oldrel="$(grep -Po '^pkgrel=\K.*' "$pkg/PKGBUILD")"
 # It carries on with the version the PKGBUILD already has instead of stopping:
 # everything below is about the packaging, not the version, and a package
 # cannot be fixed at all if a stalled upstream channel also blocks the AUR
-# sync - which is exactly what happened to fluxer-bin, whose stable channel
-# has been serving canary builds since 0.0.8.
+# sync - which is exactly what happened to fluxer-bin during the stretch when
+# its stable channel served canary builds instead of releases.
 rc=0
 ver="$(latest_version)" || rc=$?
 if [[ "$rc" -eq 75 ]]; then
