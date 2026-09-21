@@ -39,6 +39,7 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 
 | Package | Upstream | Upstream deliverable | AUR |
 |---|---|---|---|
+| `bottles-opener` | [Felitendo/bottles-opener](https://github.com/Felitendo/bottles-opener) — double-click a file and it opens in its Windows program inside Bottles, with the file types and icons from the bottle's registry | *built from source* | [bottles-opener](https://aur.archlinux.org/packages/bottles-opener) |
 | `bt-volume-step` | [Felitendo/bt-volume-step](https://github.com/Felitendo/bt-volume-step) — corrects the coarse internal volume grid of Bluetooth audio devices on PipeWire | *built from source* | [bt-volume-step](https://aur.archlinux.org/packages/bt-volume-step) |
 | `cachy-auto-update` | [Felitendo/cachy-auto-update](https://github.com/Felitendo/cachy-auto-update) — unattended background updates for CachyOS (pacman, AUR, Flatpak, AppImages) | *built from source* | [cachy-auto-update](https://aur.archlinux.org/packages/cachy-auto-update) |
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | AppImage | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
