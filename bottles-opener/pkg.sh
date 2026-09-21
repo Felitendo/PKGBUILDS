@@ -1,10 +1,10 @@
 # bottles-opener - opens files in their Windows program inside Bottles
-# (https://github.com/Felitendo/bottles-opener).
+# (https://github.com/LoonixTools/bottles-opener).
 #
 # Shell and two small Python scripts, a gettext catalog and a scdoc man page:
 # the PKGBUILD runs the upstream Makefile against the release tarball.
 
-UPSTREAM_REPO="Felitendo/bottles-opener"
+UPSTREAM_REPO="LoonixTools/bottles-opener"
 
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(gettext scdoc)

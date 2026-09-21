@@ -1,12 +1,12 @@
 # middleclick-autoscroll - middle-click autoscroll for Chromium-based
-# applications (https://github.com/Felitendo/middleclick-autoscroll).
+# applications (https://github.com/LoonixTools/middleclick-autoscroll).
 #
 # Pure shell plus a gettext catalog and a scdoc man page, so the PKGBUILD just
 # runs the upstream Makefile against the release tarball. Nothing is prebuilt
 # and nothing is republished - the AUR package builds exactly what the tag
 # contains.
 
-UPSTREAM_REPO="Felitendo/middleclick-autoscroll"
+UPSTREAM_REPO="LoonixTools/middleclick-autoscroll"
 
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(gettext scdoc)

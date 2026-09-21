@@ -1,11 +1,11 @@
 # bt-volume-step - fixed volume steps for Bluetooth audio devices on PipeWire
-# (https://github.com/Felitendo/bt-volume-step).
+# (https://github.com/LoonixTools/bt-volume-step).
 #
 # Nothing is compiled: the payload is a single Python script plus a systemd
 # user unit, installed by the upstream Makefile. Sourced from the release
 # tarball, so this is a source package without a -bin suffix.
 
-UPSTREAM_REPO="Felitendo/bt-volume-step"
+UPSTREAM_REPO="LoonixTools/bt-volume-step"
 
 # Installed in CI (pacman) before the makepkg test build. check() runs the
 # upstream test suite, which needs nothing beyond python.

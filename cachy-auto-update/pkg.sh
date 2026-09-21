@@ -1,12 +1,12 @@
 # cachy-auto-update - unattended background updates for CachyOS
-# (https://github.com/Felitendo/cachy-auto-update).
+# (https://github.com/LoonixTools/cachy-auto-update).
 #
 # Pure shell plus a gettext catalog and a scdoc man page, so the PKGBUILD just
 # runs the upstream Makefile against the release tarball. Nothing is prebuilt
 # and nothing is republished - the AUR package builds exactly what the tag
 # contains.
 
-UPSTREAM_REPO="Felitendo/cachy-auto-update"
+UPSTREAM_REPO="LoonixTools/cachy-auto-update"
 
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(gettext scdoc)
