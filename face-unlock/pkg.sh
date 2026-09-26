@@ -1,12 +1,13 @@
-# plasma-face-unlock - Face ID for KDE Plasma
-# (https://github.com/LoonixTools/plasma-face-unlock).
+# face-unlock - Face ID for Linux: Plasma, GNOME, Hyprland and Niri
+# (https://github.com/LoonixTools/face-unlock). Called plasma-face-unlock
+# before 2.0.0.
 #
 # Built from the release tarball with the upstream Makefile (CMake for the
 # daemon, the agent and the PAM module). The two face networks are sources of
 # their own from the OpenCV model zoo with fixed checksums, so a release only
 # changes the tarball's.
 
-UPSTREAM_REPO="LoonixTools/plasma-face-unlock"
+UPSTREAM_REPO="LoonixTools/face-unlock"
 
 # Installed in CI (pacman) before the makepkg test build, which skips the
 # dependency check. check() runs the upstream tests and needs nothing more.

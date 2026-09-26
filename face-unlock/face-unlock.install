@@ -1,16 +1,21 @@
 post_install() {
+  # Faces, settings and PAM lines of plasma-face-unlock, the old name.
+  face-unlock --root migrate >/dev/null 2>&1 || true
   cat <<'MSG'
 
-  plasma-face-unlock is installed but not active yet.
+  face-unlock is installed. Run it as your own user, not with sudo:
 
-    plasma-face-unlock          interactive menu
-    plasma-face-unlock enable   set up your face and turn it on
+    face-unlock          interactive menu
+    face-unlock enable   set up your face and turn it on
 
-  Run it as your own user, not with sudo. It asks for your password when it
-  needs to, and sudo and admin prompts stay with the password until you switch
-  them on under Settings.
+  It asks for your password when it needs to. sudo and admin prompts stay
+  with the password until you switch them on under Settings.
 
 MSG
+}
+
+post_upgrade() {
+  face-unlock --root migrate >/dev/null 2>&1 || true
 }
 
 pre_remove() {
@@ -18,12 +23,12 @@ pre_remove() {
 
   Before removing this package, run
 
-    plasma-face-unlock disable
+    face-unlock disable
 
-  as each user that turned it on. That takes face unlock back out of sudo and
-  polkit. (Removing it without that is safe too: the PAM line is written so
-  that a missing module is skipped, and sudo keeps asking for the password.)
+  as each user that turned it on. That takes face unlock back out of sudo,
+  polkit and the lock screens. (Removing it without that is safe too: the PAM
+  line is written so that a missing module is skipped.)
 
 MSG
-  systemctl disable --now plasma-face-unlockd.socket plasma-face-unlockd.service >/dev/null 2>&1 || true
+  systemctl disable --now face-unlockd.socket face-unlockd.service >/dev/null 2>&1 || true
 }
