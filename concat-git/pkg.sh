@@ -1,12 +1,13 @@
 # concat-git - Concat (https://github.com/jub0t/Concat) built from the main
 # branch. Same build as concat, see that package for why the editor needs
-# cargo, cmake and clang and nothing else, and why the FemtoVG-over-wgpu
-# renderer is the one a distribution package can build.
+# cargo, cmake and clang.
 #
-# The one difference: concat pins the prebuilt sherpa-onnx static-lib archive
-# as a checksummed source, which it can because the version comes from a
-# tagged Cargo.lock. Here it moves with main, so sherpa-onnx-sys' build
-# script downloads it and build() needs the network.
+# The differences: main dropped the FemtoVG-over-wgpu renderer after 0.2.4,
+# so this builds upstream's default, Skia. And concat pins the prebuilt
+# sherpa-onnx static-lib archive as a checksummed source, which it can
+# because the version comes from a tagged Cargo.lock. Here the versions move
+# with main, so the build scripts of sherpa-onnx-sys and skia-bindings
+# download their archives and build() needs the network.
 #
 # VCS packages are not version-tracked here on purpose. The AUR copy of a -git
 # PKGBUILD carries only a snapshot of pkgver; the real version comes from
