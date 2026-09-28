@@ -11,6 +11,16 @@
 # the package is rebuilt, re-checked and pushed only when the packaging itself
 # changes. makepkg then refreshes the pkgver snapshot as part of the test build.
 
+# The AUR name once belonged to an unrelated package that was deleted. It was
+# restored as an orphan and an adoption request filed; pushes fail until a
+# Package Maintainer grants it. So publish only once the AUR lists us as the
+# maintainer. After that this check can go.
+AUR_PUBLISH=false
+if [[ "$(curl -sf "https://aur.archlinux.org/rpc/v5/info/timetable-git" \
+  | jq -r '.results[0].Maintainer')" == "Felitendo" ]]; then
+  AUR_PUBLISH=true
+fi
+
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(meson ninja glib2 glib2-devel gtk4 libadwaita python
             python-gobject gettext git)
