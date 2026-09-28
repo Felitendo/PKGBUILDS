@@ -48,6 +48,7 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `concat-bin` | [jub0t/Concat](https://github.com/jub0t/Concat) — prebuilt release of `concat` | `.deb` | [concat-bin](https://aur.archlinux.org/packages/concat-bin) |
 | `concat-git` | [jub0t/Concat](https://github.com/jub0t/Concat) — `main` branch of `concat` | *built from source* | [concat-git](https://aur.archlinux.org/packages/concat-git) |
 | `face-unlock` | [LoonixTools/face-unlock](https://github.com/LoonixTools/face-unlock): Face ID for Linux, for the lock screen, sudo and admin prompts on Plasma, GNOME, Hyprland and Niri, with a photo check (C++/Qt6, OpenCV). Called `plasma-face-unlock` before 2.0.0 | *built from source* | [face-unlock](https://aur.archlinux.org/packages/face-unlock) |
+| `face-unlock-bin` | [LoonixTools/face-unlock](https://github.com/LoonixTools/face-unlock): prebuilt release of `face-unlock`, with OpenCV linked in | tarball (built on Arch) | [face-unlock-bin](https://aur.archlinux.org/packages/face-unlock-bin) |
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | tarball | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
 | `kitty-tune-bin` | [alan7383/KittyTuneDesktop](https://github.com/alan7383/KittyTuneDesktop) — SoundCloud and YouTube music player (Kotlin/Compose Multiplatform) | `.deb` | [kitty-tune-bin](https://aur.archlinux.org/packages/kitty-tune-bin) |
@@ -117,7 +118,8 @@ Then create a directory named after the AUR package containing:
   - `AUR_PUBLISH` — optional; set to `false` to keep a package out of the AUR
     while it is still being prepared. Everything else still runs, so the
     `PKGBUILD` is kept current and test-built; only the publishing waits.
-    Flip it to `true` to go live (`moondeckbuddy-bin`).
+    Flip it to `true` to go live (`moondeckbuddy-bin`). `face-unlock-bin` sets it
+    itself: it goes live with the first release that has its tarball.
 
   Other local source files in the directory (`.desktop` files, patches, …) are
   pushed to the AUR alongside `PKGBUILD` and `.SRCINFO`.
