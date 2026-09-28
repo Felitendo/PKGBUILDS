@@ -1,4 +1,4 @@
-pkgbase = timetable-git
+pkgbase = untis-git
 	pkgdesc = GTK4 + LibAdwaita client for WebUntis (git)
 	pkgver = 4.3.2.r31.g48ce032
 	pkgrel = 1
@@ -28,11 +28,10 @@ pkgbase = timetable-git
 	depends = gst-plugin-gtk4
 	depends = glib2
 	depends = hicolor-icon-theme
-	provides = timetable
 	provides = untis
-	conflicts = timetable
 	conflicts = untis
-	source = timetable-git::git+https://codeberg.org/ostfriese4/untis.git
+	conflicts = timetable
+	source = untis-git::git+https://codeberg.org/ostfriese4/untis.git
 	sha256sums = SKIP
 
-pkgname = timetable-git
+pkgname = untis-git

@@ -1,7 +1,7 @@
-# timetable-git - "Timetable" (https://codeberg.org/ostfriese4/untis) built
-# from the main branch. Same meson build as timetable.
+# untis-git - "Timetable" (https://codeberg.org/ostfriese4/untis) built
+# from the main branch. Same meson build as untis.
 #
-# There is no timetable-bin: upstream publishes no binary release assets, and
+# There is no untis-bin: upstream publishes no binary release assets, and
 # the app is pure Python anyway, so there would be nothing prebuilt to ship.
 #
 # VCS packages are not version-tracked here on purpose. The AUR copy of a -git
@@ -10,16 +10,6 @@
 # pkgver that is already in the PKGBUILD, which makes the update run a no-op:
 # the package is rebuilt, re-checked and pushed only when the packaging itself
 # changes. makepkg then refreshes the pkgver snapshot as part of the test build.
-
-# The AUR name once belonged to an unrelated package that was deleted. It was
-# restored as an orphan and an adoption request filed; pushes fail until a
-# Package Maintainer grants it. So publish only once the AUR lists us as the
-# maintainer. After that this check can go.
-AUR_PUBLISH=false
-if [[ "$(curl -sf "https://aur.archlinux.org/rpc/v5/info/timetable-git" \
-  | jq -r '.results[0].Maintainer')" == "Felitendo" ]]; then
-  AUR_PUBLISH=true
-fi
 
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(meson ninja glib2 glib2-devel gtk4 libadwaita python

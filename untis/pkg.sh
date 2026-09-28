@@ -1,4 +1,4 @@
-# timetable - "Timetable" (https://codeberg.org/ostfriese4/untis), a GTK4 +
+# untis - "Timetable" (https://codeberg.org/ostfriese4/untis), a GTK4 +
 # LibAdwaita WebUntis client written in Python.
 #
 # Upstream publishes no binary release assets, so this is a source package:
