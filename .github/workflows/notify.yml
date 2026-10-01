@@ -1,0 +1,133 @@
+name: Notify
+
+# Opens an issue when a package fails to update on main, so it reaches GitHub's
+# notifications, the mobile app and email. One issue per package: a broken
+# package must not hide behind another one, and a run of only some packages
+# must not close the issues of the others. A later failure refreshes the issue
+# instead of commenting, as the schedule would otherwise add one every 6 hours.
+# The next successful update of that package closes it again.
+
+on:
+  workflow_run:
+    workflows: [Update AUR packages]
+    types: [completed]
+
+permissions:
+  actions: read
+  issues: write
+
+concurrency:
+  group: notify
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.workflow_run.event != 'pull_request' &&
+      github.event.workflow_run.head_branch == github.event.repository.default_branch
+    steps:
+      - name: Open, update or close the failure issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          WORKFLOW: ${{ github.event.workflow_run.name }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          EVENT: ${{ github.event.workflow_run.event }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          label=ci-failure
+          issues="$(gh issue list --state open --label "$label" --limit 200 --json number,title)"
+
+          # The issue title for a job: the package for "update (<package>)",
+          # the workflow for anything else.
+          title_for() {
+            if [[ $1 =~ ^update\ \((.+)\)$ ]]; then
+              echo "${BASH_REMATCH[1]} fails to update"
+            else
+              echo "$WORKFLOW is failing"
+            fi
+          }
+
+          issue_for() {
+            jq -r --arg title "$1" '.[] | select(.title == $title) | .number' <<<"$issues" | head -1
+          }
+
+          # The lines of the failed step leading up to its first error, enough
+          # to see what broke without opening the log.
+          excerpt_for() {
+            curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+              "$GITHUB_API_URL/repos/$GH_REPO/actions/jobs/$1/logs" |
+              sed -E 's/^[0-9TZ:.-]+ //; s/\x1b\[[0-9;]*m//g' |
+              awk '/^##\[group\]Run / { out = "" } { out = out $0 "\n" }
+                /^##\[error\]/ { printf "%s", out; exit }' |
+              tail -40 || true
+          }
+
+          # report <title> <job json, or empty if the run never started>
+          report() {
+            local title=$1 job=$2 line excerpt="" issue body
+            if [ -n "$job" ]; then
+              line="$(jq -r '"- [\(.name)](\(.html_url))" +
+                ([.steps[]? | select(.conclusion == "failure") | .name] |
+                  if length > 0 then ": " + join(", ") else "" end)' <<<"$job")"
+              excerpt="$(excerpt_for "$(jq -r .id <<<"$job")")"
+            else
+              line="The run did not start ($CONCLUSION)."
+            fi
+
+            body="$(cat <<EOF
+          [$WORKFLOW]($RUN_URL) failed on \`${SHA:0:7}\`, started by \`$EVENT\`.
+
+          $line
+          EOF
+            )"
+            if [ -n "$excerpt" ]; then
+              body="$body
+
+          <details>
+          <summary>Log</summary>
+
+          \`\`\`
+          $excerpt
+          \`\`\`
+
+          </details>"
+            fi
+
+            issue="$(issue_for "$title")"
+            if [ -n "$issue" ]; then
+              gh issue edit "$issue" --body "$body"
+            else
+              gh label create "$label" --color d73a4a \
+                --description "A package fails to update" --force
+              gh issue create --title "$title" --label "$label" --body "@$OWNER $body"
+            fi
+          }
+
+          close() {
+            local issue
+            issue="$(issue_for "$1")"
+            if [ -n "$issue" ]; then
+              gh issue close "$issue" --comment "Passing again: $RUN_URL"
+            fi
+          }
+
+          if [ "$CONCLUSION" = startup_failure ]; then
+            report "$WORKFLOW is failing" ""
+            exit 0
+          fi
+
+          # Cancelled and skipped jobs say nothing about a package.
+          while IFS= read -r -u 3 job; do
+            title="$(title_for "$(jq -r .name <<<"$job")")"
+            case "$(jq -r .conclusion <<<"$job")" in
+            success) close "$title" ;;
+            failure | timed_out) report "$title" "$job" ;;
+            esac
+          done 3< <(gh api --paginate "repos/$GH_REPO/actions/runs/$RUN_ID/jobs?per_page=100" --jq '.jobs[]')
