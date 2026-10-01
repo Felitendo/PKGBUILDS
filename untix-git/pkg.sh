@@ -1,7 +1,7 @@
-# untis-git - "Timetable" (https://codeberg.org/ostfriese4/untis) built
-# from the main branch. Same meson build as untis.
+# untix-git - "Timetable" (https://codeberg.org/ostfriese4/untis) built
+# from the main branch. Same meson build as untix.
 #
-# There is no untis-bin: upstream publishes no binary release assets, and
+# There is no untix-bin: upstream publishes no binary release assets, and
 # the app is pure Python anyway, so there would be nothing prebuilt to ship.
 #
 # VCS packages are not version-tracked here on purpose. The AUR copy of a -git

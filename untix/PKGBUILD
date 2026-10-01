@@ -2,7 +2,7 @@
 # This PKGBUILD is updated automatically:
 # https://github.com/Felitendo/PKGBUILDS
 
-pkgname=untis
+pkgname=untix
 pkgver=4.3.2
 pkgrel=1
 pkgdesc="GTK4 + LibAdwaita client for WebUntis"
@@ -13,8 +13,8 @@ depends=('gtk4' 'libadwaita' 'webkitgtk-6.0' 'libsecret' 'python'
          'python-gobject' 'python-cairo' 'python-requests' 'python-pyotp'
          'glib2' 'hicolor-icon-theme')
 makedepends=('meson' 'ninja' 'glib2-devel' 'gettext')
-# called timetable on the AUR before; same files
-conflicts=('timetable')
+# called untis and timetable on the AUR before; same files
+conflicts=('untis' 'timetable')
 source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz")
 sha256sums=('febd90cac783eb1953a3f094c3122b9e47a88e2ae7b8ed33fdc9279300b4505c')
 

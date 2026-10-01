@@ -2,7 +2,7 @@
 # This PKGBUILD is updated automatically:
 # https://github.com/Felitendo/PKGBUILDS
 
-pkgname=untis-git
+pkgname=untix-git
 pkgver=4.3.2.r31.g48ce032
 pkgrel=1
 pkgdesc="GTK4 + LibAdwaita client for WebUntis (git)"
@@ -18,8 +18,8 @@ depends=('gtk4' 'libadwaita' 'webkitgtk-6.0' 'libsecret' 'python'
          'gst-plugins-base' 'gst-plugin-pipewire' 'gst-plugin-gtk4' 'glib2'
          'hicolor-icon-theme')
 makedepends=('meson' 'ninja' 'glib2-devel' 'gettext' 'git')
-provides=('untis')
-conflicts=('untis' 'timetable')
+provides=('untix')
+conflicts=('untix' 'untis' 'timetable')
 source=("${pkgname}::git+https://codeberg.org/ostfriese4/untis.git")
 sha256sums=('SKIP')
 

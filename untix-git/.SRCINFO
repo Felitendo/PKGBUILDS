@@ -1,4 +1,4 @@
-pkgbase = untis-git
+pkgbase = untix-git
 	pkgdesc = GTK4 + LibAdwaita client for WebUntis (git)
 	pkgver = 4.3.2.r31.g48ce032
 	pkgrel = 1
@@ -28,10 +28,11 @@ pkgbase = untis-git
 	depends = gst-plugin-gtk4
 	depends = glib2
 	depends = hicolor-icon-theme
-	provides = untis
+	provides = untix
+	conflicts = untix
 	conflicts = untis
 	conflicts = timetable
-	source = untis-git::git+https://codeberg.org/ostfriese4/untis.git
+	source = untix-git::git+https://codeberg.org/ostfriese4/untis.git
 	sha256sums = SKIP
 
-pkgname = untis-git
+pkgname = untix-git

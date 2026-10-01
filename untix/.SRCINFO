@@ -1,4 +1,4 @@
-pkgbase = untis
+pkgbase = untix
 	pkgdesc = GTK4 + LibAdwaita client for WebUntis
 	pkgver = 4.3.2
 	pkgrel = 1
@@ -20,8 +20,9 @@ pkgbase = untis
 	depends = python-pyotp
 	depends = glib2
 	depends = hicolor-icon-theme
+	conflicts = untis
 	conflicts = timetable
-	source = untis-4.3.2.tar.gz::https://codeberg.org/ostfriese4/untis/archive/v4.3.2.tar.gz
+	source = untix-4.3.2.tar.gz::https://codeberg.org/ostfriese4/untis/archive/v4.3.2.tar.gz
 	sha256sums = febd90cac783eb1953a3f094c3122b9e47a88e2ae7b8ed33fdc9279300b4505c
 
-pkgname = untis
+pkgname = untix
