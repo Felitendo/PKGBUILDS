@@ -1,5 +1,5 @@
-# tenzen-studio-bin - Tenzen Studio (https://tenzen.studio), a proprietary
-# Electron app for recording and editing product demos.
+# tenzen-studio-bin - Capture Studio by Tenzen Studio (https://tenzen.studio),
+# a proprietary Electron app for recording and editing product demos.
 #
 # Upstream publishes no source, so there is only this -bin package. For Linux
 # it ships nothing but a Flatpak bundle, versioned on its own download host:
@@ -22,10 +22,10 @@ latest_version() {
 refresh_checksums() {
   local ver="$1" pkgbuild="$2" sha
 
-  sha="$(curl -sf "$API" | jq -r --arg f "Tenzen-$ver-linux-x64.flatpak" \
+  sha="$(curl -sf "$API" | jq -r --arg f "Capture-Studio-$ver-linux-x64.flatpak" \
     '.release.artifacts[] | select(.file_name == $f) | .sha256')"
   if [[ ! "$sha" =~ ^[0-9a-f]{64}$ ]]; then
-    echo "the release API lists no Tenzen-$ver-linux-x64.flatpak" >&2
+    echo "the release API lists no Capture-Studio-$ver-linux-x64.flatpak" >&2
     return 1
   fi
 
