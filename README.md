@@ -45,6 +45,7 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `bottles-opener` | [LoonixTools/bottles-opener](https://github.com/LoonixTools/bottles-opener) — double-click a file and it opens in its Windows program inside Bottles, with the file types and icons from the bottle's registry | *built from source* | [bottles-opener](https://aur.archlinux.org/packages/bottles-opener) |
 | `bt-volume-step` | [LoonixTools/bt-volume-step](https://github.com/LoonixTools/bt-volume-step) — corrects the coarse internal volume grid of Bluetooth audio devices on PipeWire | *built from source* | [bt-volume-step](https://aur.archlinux.org/packages/bt-volume-step) |
 | `cachy-auto-update` | [LoonixTools/cachy-auto-update](https://github.com/LoonixTools/cachy-auto-update) — unattended background updates for CachyOS (pacman, AUR, Flatpak, AppImages) | *built from source* | [cachy-auto-update](https://aur.archlinux.org/packages/cachy-auto-update) |
+| `capture-studio-bin` | [tenzen.studio](https://tenzen.studio): Capture Studio by Tenzen Studio, screen recorder and editor for product demos (proprietary Electron app). Called `tenzen-studio-bin` before | Flatpak bundle | [capture-studio-bin](https://aur.archlinux.org/packages/capture-studio-bin) |
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | AppImage | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
 | `chromium-widevine-helper` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | *no build step* | [chromium-widevine-helper](https://aur.archlinux.org/packages/chromium-widevine-helper) |
 | `concat` | [jub0t/Concat](https://github.com/jub0t/Concat) — free and open-source CapCut replacement (a Slint window over a Rust video engine) | *built from source* | [concat](https://aur.archlinux.org/packages/concat) |
@@ -68,7 +69,6 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `plezy-bin` | [edde746/plezy](https://github.com/edde746/plezy) — Plex, Jellyfin and Emby client (Flutter); the source package [lives in `extra`](https://archlinux.org/packages/extra/x86_64/plezy/) | `.deb` | [plezy-bin](https://aur.archlinux.org/packages/plezy-bin) |
 | `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | tarball | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
 | `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool | self-contained tarball | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
-| `tenzen-studio-bin` | [tenzen.studio](https://tenzen.studio) — Tenzen Studio, screen recorder and editor for product demos (proprietary Electron app) | Flatpak bundle | [tenzen-studio-bin](https://aur.archlinux.org/packages/tenzen-studio-bin) |
 | `untix` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis): "Timetable", a GTK4 + LibAdwaita client for WebUntis. Called `untis` and `timetable` on the AUR before | *built from source* | [untix](https://aur.archlinux.org/packages/untix) |
 | `untix-git` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis): `main` branch of `untix` | *built from source* | [untix-git](https://aur.archlinux.org/packages/untix-git) |
 | `vacuumtube-bin` | [shy1132/VacuumTube](https://github.com/shy1132/VacuumTube) — YouTube Leanback (TV UI) with built-in adblocker | `.deb` | [vacuumtube-bin](https://aur.archlinux.org/packages/vacuumtube-bin) |
@@ -117,7 +117,7 @@ Then create a directory named after the AUR package containing:
     too.
   - `BUILD_DEPS` — optional array of Arch packages to install before the CI
     test build; only needed by packages that build from source or need a
-    tool to unpack upstream's deliverable (`tenzen-studio-bin`: `ostree`).
+    tool to unpack upstream's deliverable (`capture-studio-bin`: `ostree`).
   - `AUR_PUBLISH` — optional; set to `false` to keep a package out of the AUR
     while it is still being prepared. Everything else still runs, so the
     `PKGBUILD` is kept current and test-built; only the publishing waits.

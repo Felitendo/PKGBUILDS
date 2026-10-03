@@ -2,7 +2,7 @@
 # This PKGBUILD is updated automatically:
 # https://github.com/Felitendo/PKGBUILDS
 
-pkgname=tenzen-studio-bin
+pkgname=capture-studio-bin
 _pkgname=tenzen
 pkgver=0.1.31
 pkgrel=1
@@ -13,8 +13,9 @@ license=('LicenseRef-proprietary')
 depends=('gtk3' 'nss' 'alsa-lib' 'ffmpeg' 'python-xlib')
 optdepends=('libpulse: record system audio')
 makedepends=('ostree' 'asar')
-provides=('tenzen-studio')
-conflicts=('tenzen-studio')
+provides=('capture-studio')
+# called tenzen-studio-bin on the AUR before
+conflicts=('capture-studio' 'tenzen-studio-bin')
 options=('!strip' '!debug')
 _bundle="Capture-Studio-${pkgver}-linux-x64.flatpak"
 source=("${_bundle}::https://downloads.tenzen.studio/desktop/stable/linux/${pkgver}/${_bundle}")

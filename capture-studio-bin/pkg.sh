@@ -1,4 +1,4 @@
-# tenzen-studio-bin - Capture Studio by Tenzen Studio (https://tenzen.studio),
+# capture-studio-bin - Capture Studio by Tenzen Studio (https://tenzen.studio),
 # a proprietary Electron app for recording and editing product demos.
 #
 # Upstream publishes no source, so there is only this -bin package. For Linux
