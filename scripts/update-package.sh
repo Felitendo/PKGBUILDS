@@ -12,8 +12,10 @@
 # allow a PKGBUILD to pull in a binary tarball built by the maintainer, so
 # nothing is ever built or hosted here.
 #
-# Requires: GH_TOKEN (repo push), AUR_SSH_PRIVATE_KEY.
-# Optional: AUR_GIT_NAME / AUR_GIT_EMAIL for the AUR commit identity.
+# Requires: AUR_SSH_PRIVATE_KEY. The push back to this repository uses the
+# credentials actions/checkout left behind.
+# Optional: GITHUB_API_TOKEN for a higher GitHub API rate limit,
+# AUR_GIT_NAME / AUR_GIT_EMAIL for the AUR commit identity.
 set -euo pipefail
 
 pkg="${1:?usage: update-package.sh <package-dir>}"
@@ -26,6 +28,35 @@ pkg="${pkg%/}"
 if [[ "${CI:-}" == "true" ]]; then
   git config --global --add safe.directory "$repo_root"
 fi
+
+# pkg.sh asks GitHub about upstream releases with `gh api <path> [--jq <filter>]
+# [-H <header>]`. CI runs on Gitea, which has no GitHub token to give gh, so
+# this stands in for it: the same calls as plain curl, anonymous unless
+# GITHUB_API_TOKEN is set. Anonymous calls get 60 per hour, enough for a run.
+gh() {
+  if [[ "${1:-}" != api ]]; then
+    echo "gh $1: only 'gh api' is available here" >&2
+    return 1
+  fi
+  shift
+  local api_path="" filter="" headers=() out
+  while (($#)); do
+    case "$1" in
+      --jq) filter="$2"; shift 2 ;;
+      -H) headers+=(-H "$2"); shift 2 ;;
+      *) api_path="$1"; shift ;;
+    esac
+  done
+  if [[ -n "${GITHUB_API_TOKEN:-}" ]]; then
+    headers+=(-H "Authorization: Bearer $GITHUB_API_TOKEN")
+  fi
+  out="$(curl -sfL "${headers[@]}" "https://api.github.com/${api_path#/}")" || return 1
+  if [[ -n "$filter" ]]; then
+    jq -r "$filter" <<< "$out"
+  else
+    printf '%s\n' "$out"
+  fi
+}
 
 BUILD_DEPS=()
 # A package can be kept out of the AUR while it is still being prepared here:
@@ -121,8 +152,8 @@ rm -f "$pkg"/*.pkg.tar.* "$pkg"/*.tar.zst "$pkg"/*.tar.gz "$pkg"/*.tar.bz2 \
 committed=false
 
 if [[ "${CI:-}" == "true" ]]; then
-  git config user.name "github-actions[bot]"
-  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  git config user.name "gitea-actions[bot]"
+  git config user.email "actions@git.felo.gg"
 
   git add "$pkg/PKGBUILD" "$pkg/.SRCINFO"
   if git diff --cached --quiet; then

@@ -1,6 +1,7 @@
 # PKGBUILDS
 
-Automated AUR packages, kept up to date by GitHub Actions.
+Automated AUR packages, kept up to date by Gitea Actions on
+[git.felo.gg](https://git.felo.gg/Felitendo/PKGBUILDS).
 
 Every 6 hours the [update workflow](.github/workflows/update.yml) checks each
 package's upstream for a new release. When one is found it:
@@ -42,25 +43,25 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 
 | Package | Upstream | Upstream deliverable | AUR |
 |---|---|---|---|
-| `bottles-opener` | [LoonixTools/bottles-opener](https://github.com/LoonixTools/bottles-opener) — double-click a file and it opens in its Windows program inside Bottles, with the file types and icons from the bottle's registry | *built from source* | [bottles-opener](https://aur.archlinux.org/packages/bottles-opener) |
-| `bt-volume-step` | [LoonixTools/bt-volume-step](https://github.com/LoonixTools/bt-volume-step) — corrects the coarse internal volume grid of Bluetooth audio devices on PipeWire | *built from source* | [bt-volume-step](https://aur.archlinux.org/packages/bt-volume-step) |
-| `cachy-auto-update` | [LoonixTools/cachy-auto-update](https://github.com/LoonixTools/cachy-auto-update) — unattended background updates for CachyOS (pacman, AUR, Flatpak, AppImages) | *built from source* | [cachy-auto-update](https://aur.archlinux.org/packages/cachy-auto-update) |
+| `bottles-opener` | [LoonixTools/bottles-opener](https://git.felo.gg/LoonixTools/bottles-opener) — double-click a file and it opens in its Windows program inside Bottles, with the file types and icons from the bottle's registry | *built from source* | [bottles-opener](https://aur.archlinux.org/packages/bottles-opener) |
+| `bt-volume-step` | [LoonixTools/bt-volume-step](https://git.felo.gg/LoonixTools/bt-volume-step) — corrects the coarse internal volume grid of Bluetooth audio devices on PipeWire | *built from source* | [bt-volume-step](https://aur.archlinux.org/packages/bt-volume-step) |
+| `cachy-auto-update` | [LoonixTools/cachy-auto-update](https://git.felo.gg/LoonixTools/cachy-auto-update) — unattended background updates for CachyOS (pacman, AUR, Flatpak, AppImages) | *built from source* | [cachy-auto-update](https://aur.archlinux.org/packages/cachy-auto-update) |
 | `capture-studio-bin` | [tenzen.studio](https://tenzen.studio): Capture Studio by Tenzen Studio, screen recorder and editor for product demos (proprietary Electron app). Called `tenzen-studio-bin` before | Flatpak bundle | [capture-studio-bin](https://aur.archlinux.org/packages/capture-studio-bin) |
 | `chiaki-ng-bin` | [streetpea/chiaki-ng](https://github.com/streetpea/chiaki-ng) — PlayStation Remote Play client (Qt6) | AppImage | [chiaki-ng-bin](https://aur.archlinux.org/packages/chiaki-ng-bin) |
 | `chromium-widevine-helper` | [GloriousEggroll/chromium-widevine-helper](https://github.com/GloriousEggroll/chromium-widevine-helper) — extension + native helper installing Google's Widevine CDM into Chromium-based browser profiles | *no build step* | [chromium-widevine-helper](https://aur.archlinux.org/packages/chromium-widevine-helper) |
 | `concat` | [jub0t/Concat](https://github.com/jub0t/Concat) — free and open-source CapCut replacement (a Slint window over a Rust video engine) | *built from source* | [concat](https://aur.archlinux.org/packages/concat) |
 | `concat-bin` | [jub0t/Concat](https://github.com/jub0t/Concat) — prebuilt release of `concat` | `.deb` | [concat-bin](https://aur.archlinux.org/packages/concat-bin) |
 | `concat-git` | [jub0t/Concat](https://github.com/jub0t/Concat) — `main` branch of `concat` | *built from source* | [concat-git](https://aur.archlinux.org/packages/concat-git) |
-| `face-unlock` | [LoonixTools/face-unlock](https://github.com/LoonixTools/face-unlock): Face ID for Linux, for the lock screen, sudo and admin prompts on Plasma, GNOME, Hyprland and Niri, with a photo check (C++/Qt6, OpenCV). Called `plasma-face-unlock` before 2.0.0 | *built from source* | [face-unlock](https://aur.archlinux.org/packages/face-unlock) |
-| `face-unlock-bin` | [LoonixTools/face-unlock](https://github.com/LoonixTools/face-unlock): prebuilt release of `face-unlock`, with OpenCV linked in | tarball (built on Arch) | [face-unlock-bin](https://aur.archlinux.org/packages/face-unlock-bin) |
+| `face-unlock` | [LoonixTools/face-unlock](https://git.felo.gg/LoonixTools/face-unlock): Face ID for Linux, for the lock screen, sudo and admin prompts on Plasma, GNOME, Hyprland and Niri, with a photo check (C++/Qt6, OpenCV). Called `plasma-face-unlock` before 2.0.0 | *built from source* | [face-unlock](https://aur.archlinux.org/packages/face-unlock) |
+| `face-unlock-bin` | [LoonixTools/face-unlock](https://git.felo.gg/LoonixTools/face-unlock): prebuilt release of `face-unlock`, with OpenCV linked in | tarball (built on Arch) | [face-unlock-bin](https://aur.archlinux.org/packages/face-unlock-bin) |
 | `faugus-launcher-bin` | [Faugus/faugus-launcher](https://github.com/Faugus/faugus-launcher) — launcher for Windows games via UMU-Launcher | `.deb` (`all`) | [faugus-launcher-bin](https://aur.archlinux.org/packages/faugus-launcher-bin) |
 | `fluxer-bin` | [fluxer.app](https://fluxer.app) — Fluxer desktop client (Electron) | tarball | [fluxer-bin](https://aur.archlinux.org/packages/fluxer-bin) |
 | `kitty-tune-bin` | [alan7383/KittyTuneDesktop](https://github.com/alan7383/KittyTuneDesktop) — SoundCloud and YouTube music player (Kotlin/Compose Multiplatform) | `.deb` | [kitty-tune-bin](https://aur.archlinux.org/packages/kitty-tune-bin) |
 | `lunar-client-bin` | [lunarclient.com](https://lunarclient.com) — Minecraft PvP modpack launcher | AppImage | [lunar-client-bin](https://aur.archlinux.org/packages/lunar-client-bin) |
-| `middleclick-autoscroll` | [LoonixTools/middleclick-autoscroll](https://github.com/LoonixTools/middleclick-autoscroll) — enables middle-click autoscroll in every application that supports it | *built from source* | [middleclick-autoscroll](https://aur.archlinux.org/packages/middleclick-autoscroll) |
+| `middleclick-autoscroll` | [LoonixTools/middleclick-autoscroll](https://git.felo.gg/LoonixTools/middleclick-autoscroll) — enables middle-click autoscroll in every application that supports it | *built from source* | [middleclick-autoscroll](https://aur.archlinux.org/packages/middleclick-autoscroll) |
 | `modrinth-app-bin` | [modrinth/code](https://github.com/modrinth/code) — Minecraft mod manager/launcher | `.deb` | [modrinth-app-bin](https://aur.archlinux.org/packages/modrinth-app-bin) |
-| `modrinth-enhanced` | [Felitendo/Modrinth-Enhanced](https://github.com/Felitendo/Modrinth-Enhanced) — Modrinth App without ads or telemetry, with offline and Ely.by accounts (a patch series on top of each Modrinth App release) | *built from source* | [modrinth-enhanced](https://aur.archlinux.org/packages/modrinth-enhanced) |
-| `modrinth-enhanced-bin` | [Felitendo/Modrinth-Enhanced](https://github.com/Felitendo/Modrinth-Enhanced) — prebuilt release of `modrinth-enhanced` | `.deb` | [modrinth-enhanced-bin](https://aur.archlinux.org/packages/modrinth-enhanced-bin) |
+| `modrinth-enhanced` | [Felitendo/Modrinth-Enhanced](https://git.felo.gg/Felitendo/Modrinth-Enhanced) — Modrinth App without ads or telemetry, with offline and Ely.by accounts (a patch series on top of each Modrinth App release) | *built from source* | [modrinth-enhanced](https://aur.archlinux.org/packages/modrinth-enhanced) |
+| `modrinth-enhanced-bin` | [Felitendo/Modrinth-Enhanced](https://git.felo.gg/Felitendo/Modrinth-Enhanced) — prebuilt release of `modrinth-enhanced` | `.deb` | [modrinth-enhanced-bin](https://aur.archlinux.org/packages/modrinth-enhanced-bin) |
 | `moondeckbuddy` | [FrogTheFrog/moondeck-buddy](https://github.com/FrogTheFrog/moondeck-buddy) — host companion of the MoonDeck Steam Deck plugin (C++/Qt6) | *built from source* | [moondeckbuddy](https://aur.archlinux.org/packages/moondeckbuddy) |
 | `moondeckbuddy-bin` | [FrogTheFrog/moondeck-buddy](https://github.com/FrogTheFrog/moondeck-buddy) — prebuilt release of `moondeckbuddy` | AppImage | *not published yet* |
 | `moonlight-vrr` | [Nonary/moonlight-qt](https://github.com/Nonary/moonlight-qt): fork of the Moonlight game streaming client with smooth VRR pacing and the PyroWave codec (C++/Qt6) | *built from source* | [moonlight-vrr](https://aur.archlinux.org/packages/moonlight-vrr) |
@@ -73,8 +74,8 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `schist-bin` | [Infrawrench/schist](https://github.com/Infrawrench/schist): prebuilt release of `schist` | `.pkg.tar.zst` | [schist-bin](https://aur.archlinux.org/packages/schist-bin) |
 | `sharpemu-bin` | [sharpemu/sharpemu](https://github.com/sharpemu/sharpemu) — experimental PlayStation 5 emulator | tarball | [sharpemu-bin](https://aur.archlinux.org/packages/sharpemu-bin) |
 | `snapx-bin` | [SnapXL/SnapX](https://github.com/SnapXL/SnapX) — ShareX-fork screenshot/sharing tool | self-contained tarball | [snapx-bin](https://aur.archlinux.org/packages/snapx-bin) |
-| `untix` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis): "Timetable", a GTK4 + LibAdwaita client for WebUntis. Called `untis` and `timetable` on the AUR before | *built from source* | [untix](https://aur.archlinux.org/packages/untix) |
-| `untix-git` | [ostfriese4/untis](https://codeberg.org/ostfriese4/untis): `main` branch of `untix` | *built from source* | [untix-git](https://aur.archlinux.org/packages/untix-git) |
+| `untix` | [ostfriese4/untix](https://codeberg.org/ostfriese4/untix): "Timetable", a GTK4 + LibAdwaita client for WebUntis. Called `untis` and `timetable` on the AUR before | *built from source* | [untix](https://aur.archlinux.org/packages/untix) |
+| `untix-git` | [ostfriese4/untix](https://codeberg.org/ostfriese4/untix): `main` branch of `untix` | *built from source* | [untix-git](https://aur.archlinux.org/packages/untix-git) |
 | `vacuumtube-bin` | [shy1132/VacuumTube](https://github.com/shy1132/VacuumTube) — YouTube Leanback (TV UI) with built-in adblocker | `.deb` | [vacuumtube-bin](https://aur.archlinux.org/packages/vacuumtube-bin) |
 | `waydroid-helper-bin` | [waydroid-helper/waydroid-helper](https://github.com/waydroid-helper/waydroid-helper) — GTK4 GUI for Waydroid configuration and extensions | AppImage | [waydroid-helper-bin](https://aur.archlinux.org/packages/waydroid-helper-bin) |
 | `wiiudownloader-bin` | [Xpl0itU/WiiUDownloader](https://github.com/Xpl0itU/WiiUDownloader) — Wii U title downloader (Go + GTK4) | AppImage | [wiiudownloader-bin](https://aur.archlinux.org/packages/wiiudownloader-bin) |
@@ -86,10 +87,16 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
    public key to it (AUR account settings).
 2. Add the matching **private** key as a repository secret named
    `AUR_SSH_PRIVATE_KEY`
-   (Settings → Secrets and variables → Actions → New repository secret).
+   (Settings → Actions → Secrets → Add secret).
 3. Optionally set the repository variable `AUR_GIT_NAME` and the repository
    **secret** `AUR_GIT_EMAIL` to control the commit identity used on the AUR
-   (defaults: `Felitendo` / the maintainer's GitHub noreply address).
+   (defaults: `Felitendo` / the maintainer's old GitHub noreply address).
+4. Optionally add a GitHub token (no scopes needed) as the secret
+   `GITHUB_API_TOKEN`. Packages ask the GitHub API about upstream releases;
+   without a token those calls are anonymous and share 60 per hour.
+
+The runner needs the `ubuntu-latest` label and Docker: every package is built
+in an `archlinux:base-devel` container.
 
 The first push to `ssh://aur@aur.archlinux.org/<pkgname>.git` creates the AUR
 package automatically.
