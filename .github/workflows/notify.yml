@@ -85,7 +85,7 @@ jobs:
             local log
             log="$(api GET "/actions/jobs/$1/logs" |
               sed -E 's/^[0-9TZ:.-]+ //; s/\x1b\[[0-9;]*m//g')" || return 0
-            awk '/^##\[group\]Run / { out = "" } { out = out $0 "\n" }
+            awk '/^(##\[group\]|::group::)Run / { out = "" } { out = out $0 "\n" }
               /^(##\[error\]|::error::)/ { printf "%s", out; found = 1; exit }
               END { if (!found) exit 1 }' <<<"$log" | tail -40 ||
               tail -40 <<<"$log"
