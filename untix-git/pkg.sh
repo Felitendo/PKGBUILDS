@@ -1,4 +1,4 @@
-# untix-git - "Timetable" (https://codeberg.org/ostfriese4/untis) built
+# untix-git - "Timetable" (https://codeberg.org/ostfriese4/untix) built
 # from the main branch. Same meson build as untix.
 #
 # There is no untix-bin: upstream publishes no binary release assets, and

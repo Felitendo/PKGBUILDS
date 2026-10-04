@@ -1,10 +1,10 @@
-# untix - "Timetable" (https://codeberg.org/ostfriese4/untis), a GTK4 +
+# untix - "Timetable" (https://codeberg.org/ostfriese4/untix), a GTK4 +
 # LibAdwaita WebUntis client written in Python.
 #
 # Upstream publishes no binary release assets, so this is a source package:
 # the PKGBUILD builds the meson project from the release tarball.
 
-UPSTREAM_REPO="ostfriese4/untis"
+UPSTREAM_REPO="ostfriese4/untix"
 
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(meson ninja glib2 glib2-devel gtk4 libadwaita python
