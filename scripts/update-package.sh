@@ -183,7 +183,16 @@ fi
 # container $HOME and the passwd home directory disagree, and ssh resolves
 # "~" through the latter, silently ignoring anything written to $HOME/.ssh.
 sshdir="$(mktemp -d)"
-printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > "$sshdir/key"
+# The secret holds the key base64-encoded on one line. The Gitea runner prints
+# each step's environment and only masks a secret it finds there word for
+# word, but it prints a multi-line value with escaped newlines: a plain key
+# would show up in the log in full.
+if [[ "$AUR_SSH_PRIVATE_KEY" == -----BEGIN* ]]; then
+  echo "::error::$pkg: AUR_SSH_PRIVATE_KEY must be base64-encoded on one line" \
+       "(base64 -w0), or the runner prints it in the log."
+  exit 1
+fi
+base64 -d <<< "$AUR_SSH_PRIVATE_KEY" > "$sshdir/key"
 chmod 600 "$sshdir/key"
 # Pinned host key, see https://aur.archlinux.org
 echo 'aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuBKrPzbawxA/k2g6NcyV5jmqwJ2s+zpgZGZ7tpLIcN' \

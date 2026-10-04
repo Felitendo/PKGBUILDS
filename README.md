@@ -87,7 +87,9 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
    public key to it (AUR account settings).
 2. Add the matching **private** key as a repository secret named
    `AUR_SSH_PRIVATE_KEY`
-   (Settings → Actions → Secrets → Add secret).
+   (Settings → Actions → Secrets → Add secret), **base64-encoded on one line**
+   (`base64 -w0 < key`). The Gitea runner prints each step's environment and
+   does not mask a multi-line secret, so a plain key would end up in the log.
 3. Optionally set the repository variable `AUR_GIT_NAME` and the repository
    **secret** `AUR_GIT_EMAIL` to control the commit identity used on the AUR
    (defaults: `Felitendo` / the maintainer's old GitHub noreply address).
