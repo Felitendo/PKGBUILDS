@@ -1,5 +1,5 @@
 # face-unlock - Face ID for Linux: Plasma, GNOME, Hyprland and Niri
-# (https://github.com/LoonixTools/face-unlock). Called plasma-face-unlock
+# (https://git.felo.gg/LoonixTools/face-unlock). Called plasma-face-unlock
 # before 2.0.0.
 #
 # Built from the release tarball with the upstream Makefile (CMake for the
@@ -14,8 +14,10 @@ UPSTREAM_REPO="LoonixTools/face-unlock"
 BUILD_DEPS=(cmake scdoc gettext opencv qt6-base qt6-declarative layer-shell-qt ki18n pam systemd-libs)
 
 latest_version() {
-  curl -sf "https://api.github.com/repos/$UPSTREAM_REPO/releases/latest" \
-    | jq -r '.tag_name' | sed 's/^v//'
+  # the highest vX.Y.Z tag; not every release has a release page
+  curl -sf "https://git.felo.gg/api/v1/repos/$UPSTREAM_REPO/tags?limit=50" \
+    | jq -r '.[].name | select(test("^v[0-9]+(\\.[0-9]+)*$"))' \
+    | sed 's/^v//' | sort -V | tail -n 1
 }
 
 # refresh_checksums <version> <pkgbuild-path>
@@ -23,7 +25,7 @@ refresh_checksums() {
   local ver="$1" pkgbuild="$2"
   local sha
   sha="$(curl -sfL \
-    "https://github.com/$UPSTREAM_REPO/archive/refs/tags/v$ver.tar.gz" \
+    "https://git.felo.gg/$UPSTREAM_REPO/archive/v$ver.tar.gz" \
     | sha256sum | cut -d' ' -f1)"
   # Only the first sum is the tarball's; the models' stay.
   sed -i -E "s|^sha256sums=\('[^']*'|sha256sums=('$sha'|" "$pkgbuild"
