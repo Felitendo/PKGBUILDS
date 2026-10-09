@@ -1,5 +1,5 @@
 # bottles-opener - opens files in their Windows program inside Bottles
-# (https://git.felo.gg/LoonixTools/bottles-opener).
+# (https://github.com/LoonixTools/bottles-opener).
 #
 # Shell and two small Python scripts, a gettext catalog and a scdoc man page:
 # the PKGBUILD runs the upstream Makefile against the release tarball.
@@ -10,10 +10,7 @@ UPSTREAM_REPO="LoonixTools/bottles-opener"
 BUILD_DEPS=(gettext scdoc)
 
 latest_version() {
-  # the highest vX.Y.Z tag; not every release has a release page
-  curl -sf "https://git.felo.gg/api/v1/repos/$UPSTREAM_REPO/tags?limit=50" \
-    | jq -r '.[].name | select(test("^v[0-9]+(\\.[0-9]+)*$"))' \
-    | sed 's/^v//' | sort -V | tail -n 1
+  gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//'
 }
 
 # refresh_checksums <version> <pkgbuild-path>
@@ -21,7 +18,7 @@ refresh_checksums() {
   local ver="$1" pkgbuild="$2"
   local sha
 
-  sha="$(curl -sfL "https://git.felo.gg/$UPSTREAM_REPO/archive/v$ver.tar.gz" \
+  sha="$(curl -sfL "https://github.com/$UPSTREAM_REPO/archive/refs/tags/v$ver.tar.gz" \
     | sha256sum | cut -d' ' -f1)"
 
   sed -i "s|^sha256sums=.*|sha256sums=('$sha')|" "$pkgbuild"
