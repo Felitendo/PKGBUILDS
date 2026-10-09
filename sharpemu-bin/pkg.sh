@@ -12,6 +12,8 @@
 UPSTREAM_REPO="sharpemu/sharpemu"
 
 latest_version() {
+  # gh instead of plain curl: authenticated API calls, so shared-IP rate
+  # limits on the CI runners can't bite.
   gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' \
     | sed -e 's/^v//' -e 's/-/_/g'
 }

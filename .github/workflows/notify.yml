@@ -1,13 +1,11 @@
 name: Notify
 
-# Opens an issue when a package fails to update on main, so it shows up in the
-# notifications on git.felo.gg. One issue per package: a broken package must
-# not hide behind another one, and a run of only some packages must not close
-# the issues of the others. A later failure refreshes the issue instead of
-# commenting, as the schedule would otherwise add one every 6 hours. The next
-# successful update of that package closes it again.
-#
-# Talks to the Gitea API with curl: gh only knows GitHub.
+# Opens an issue when a package fails to update on main, so it reaches GitHub's
+# notifications, the mobile app and email. One issue per package: a broken
+# package must not hide behind another one, and a run of only some packages
+# must not close the issues of the others. A later failure refreshes the issue
+# instead of commenting, as the schedule would otherwise add one every 6 hours.
+# The next successful update of that package closes it again.
 
 on:
   workflow_run:
@@ -32,10 +30,10 @@ jobs:
     steps:
       - name: Open, update or close the failure issues
         env:
-          TOKEN: ${{ github.token }}
-          API: ${{ github.api_url }}/repos/${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           OWNER: ${{ github.repository_owner }}
-          WORKFLOW: ${{ github.event.workflow_run.name || 'Update AUR packages' }}
+          WORKFLOW: ${{ github.event.workflow_run.name }}
           CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           EVENT: ${{ github.event.workflow_run.event }}
           RUN_ID: ${{ github.event.workflow_run.id }}
@@ -44,25 +42,7 @@ jobs:
         run: |
           set -euo pipefail
           label=ci-failure
-
-          api() {
-            local method=$1 path=$2
-            shift 2
-            curl -fsSL -X "$method" -H "Authorization: token $TOKEN" \
-              -H 'Content-Type: application/json' "$API$path" "$@"
-          }
-
-          issues="$(api GET "/issues?state=open&type=issues&labels=$label&limit=50")"
-
-          label_id() {
-            local id
-            id="$(api GET '/labels?limit=50' | jq -r --arg l "$label" '.[] | select(.name == $l) | .id')"
-            if [ -z "$id" ]; then
-              id="$(api POST /labels -d "$(jq -cn --arg l "$label" \
-                '{name: $l, color: "#d73a4a", description: "A package fails to update"}')" | jq -r .id)"
-            fi
-            echo "$id"
-          }
+          issues="$(gh issue list --state open --label "$label" --limit 200 --json number,title)"
 
           # The issue title for a job: the package for "update (<package>)",
           # the workflow for anything else.
@@ -79,16 +59,14 @@ jobs:
           }
 
           # The lines of the failed step leading up to its first error, enough
-          # to see what broke without opening the log. Falls back to the end
-          # of the log.
+          # to see what broke without opening the log.
           excerpt_for() {
-            local log
-            log="$(api GET "/actions/jobs/$1/logs" |
-              sed -E 's/^[0-9TZ:.-]+ //; s/\x1b\[[0-9;]*m//g')" || return 0
-            awk '/^(##\[group\]|::group::)Run / { out = "" } { out = out $0 "\n" }
-              /^(##\[error\]|::error::)/ { printf "%s", out; found = 1; exit }
-              END { if (!found) exit 1 }' <<<"$log" | tail -40 ||
-              tail -40 <<<"$log"
+            curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+              "$GITHUB_API_URL/repos/$GH_REPO/actions/jobs/$1/logs" |
+              sed -E 's/^[0-9TZ:.-]+ //; s/\x1b\[[0-9;]*m//g' |
+              awk '/^##\[group\]Run / { out = "" } { out = out $0 "\n" }
+                /^##\[error\]/ { printf "%s", out; exit }' |
+              tail -40 || true
           }
 
           # report <title> <job json, or empty if the run never started>
@@ -124,10 +102,11 @@ jobs:
 
             issue="$(issue_for "$title")"
             if [ -n "$issue" ]; then
-              api PATCH "/issues/$issue" -d "$(jq -cn --arg b "$body" '{body: $b}')" >/dev/null
+              gh issue edit "$issue" --body "$body"
             else
-              api POST /issues -d "$(jq -cn --arg t "$title" --arg b "@$OWNER $body" \
-                --argjson l "$(label_id)" '{title: $t, body: $b, labels: [$l]}')" >/dev/null
+              gh label create "$label" --color d73a4a \
+                --description "A package fails to update" --force
+              gh issue create --title "$title" --label "$label" --body "@$OWNER $body"
             fi
           }
 
@@ -135,9 +114,7 @@ jobs:
             local issue
             issue="$(issue_for "$1")"
             if [ -n "$issue" ]; then
-              api POST "/issues/$issue/comments" \
-                -d "$(jq -cn --arg b "Passing again: $RUN_URL" '{body: $b}')" >/dev/null
-              api PATCH "/issues/$issue" -d '{"state": "closed"}' >/dev/null
+              gh issue close "$issue" --comment "Passing again: $RUN_URL"
             fi
           }
 
@@ -147,17 +124,10 @@ jobs:
           fi
 
           # Cancelled and skipped jobs say nothing about a package.
-          page=1
-          while :; do
-            jobs="$(api GET "/actions/runs/$RUN_ID/jobs?limit=50&page=$page" | jq -c '.jobs[]?')"
-            [ -n "$jobs" ] || break
-            while IFS= read -r -u 3 job; do
-              title="$(title_for "$(jq -r .name <<<"$job")")"
-              case "$(jq -r .conclusion <<<"$job")" in
-              success) close "$title" ;;
-              failure | timed_out) report "$title" "$job" ;;
-              esac
-            done 3<<<"$jobs"
-            [ "$(wc -l <<<"$jobs")" -ge 50 ] || break
-            page=$((page + 1))
-          done
+          while IFS= read -r -u 3 job; do
+            title="$(title_for "$(jq -r .name <<<"$job")")"
+            case "$(jq -r .conclusion <<<"$job")" in
+            success) close "$title" ;;
+            failure | timed_out) report "$title" "$job" ;;
+            esac
+          done 3< <(gh api --paginate "repos/$GH_REPO/actions/runs/$RUN_ID/jobs?per_page=100" --jq '.jobs[]')

@@ -3,7 +3,7 @@ run-name: ${{ inputs.package && format('Update {0}', inputs.package) || 'Update 
 
 on:
   schedule:
-    # every 6 hours, off the full hour
+    # every 6 hours (offset from the full hour to avoid GitHub's load spikes)
     - cron: '37 */6 * * *'
   workflow_dispatch:
     inputs:
@@ -79,18 +79,17 @@ jobs:
       max-parallel: 1
       matrix:
         package: ${{ fromJson(needs.discover.outputs.packages) }}
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
-      # nodejs: actions/checkout is a JavaScript action, and the Gitea runner
-      # runs it inside this container
       - name: Install base tooling
-        run: pacman -Syu --noconfirm --needed git openssh jq zstd nodejs
+        run: pacman -Syu --noconfirm --needed git openssh github-cli jq zstd
 
       - uses: actions/checkout@v7
 
       - name: Update ${{ matrix.package }}
         env:
           AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          GITHUB_API_TOKEN: ${{ secrets.GITHUB_API_TOKEN }}
           AUR_GIT_NAME: ${{ vars.AUR_GIT_NAME }}
           AUR_GIT_EMAIL: ${{ secrets.AUR_GIT_EMAIL }}
         run: bash scripts/update-package.sh "${{ matrix.package }}"
