@@ -1,4 +1,4 @@
-# modrinth-enhanced-bin - Modrinth Enhanced (https://git.felo.gg/Felitendo/Modrinth-Enhanced),
+# modrinth-enhanced-bin - Modrinth Enhanced (https://github.com/Felitendo/Modrinth-Enhanced),
 # the Modrinth App (Tauri) with a series of patches applied: no ads, no
 # telemetry, offline and Ely.by accounts, Linux fixes.
 #
@@ -23,8 +23,7 @@ UPSTREAM_REPO="Felitendo/Modrinth-Enhanced"
 BUILD_DEPS=(glib2 libdrm)
 
 latest_version() {
-  curl -sf "https://git.felo.gg/api/v1/repos/$UPSTREAM_REPO/releases/latest" \
-    | jq -r '.tag_name' | sed 's/^v//; s/-/.r/'
+  gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//; s/-/.r/'
 }
 
 # refresh_checksums <version> <pkgbuild-path>
@@ -36,14 +35,14 @@ refresh_checksums() {
   sha_shim="$(sha256sum "$dir/vblank-shim.c" | cut -d' ' -f1)"
   sha_script="$(sha256sum "$dir/modrinth-enhanced.sh" | cut -d' ' -f1)"
 
-  asset="$(curl -sf "https://git.felo.gg/api/v1/repos/$UPSTREAM_REPO/releases/tags/$tag" \
-    | jq -r '.assets[].name | select(endswith("_amd64.deb"))')"
+  asset="$(gh api "repos/$UPSTREAM_REPO/releases/tags/$tag" \
+    --jq '.assets[].name | select(endswith("_amd64.deb"))')"
   if [[ -z "$asset" || "$asset" == *$'\n'* ]]; then
     echo "could not find exactly one amd64 .deb in release $tag" >&2
     return 1
   fi
 
-  sha="$(curl -sfL "https://git.felo.gg/$UPSTREAM_REPO/releases/download/$tag/$asset" \
+  sha="$(curl -sfL "https://github.com/$UPSTREAM_REPO/releases/download/$tag/$asset" \
     | sha256sum | cut -d' ' -f1)"
 
   sed -i \

@@ -1,4 +1,4 @@
-# modrinth-enhanced - Modrinth Enhanced (https://git.felo.gg/Felitendo/Modrinth-Enhanced),
+# modrinth-enhanced - Modrinth Enhanced (https://github.com/Felitendo/Modrinth-Enhanced),
 # the Modrinth App (Tauri) with a series of patches applied: no ads, no
 # telemetry, offline and Ely.by accounts, Linux fixes.
 #
@@ -26,13 +26,12 @@ UPSTREAM_REPO="Felitendo/Modrinth-Enhanced"
 BUILD_DEPS=(rust git jdk17-openjdk node-gyp nodejs npm pnpm webkit2gtk-4.1 gtk3 libsoup3 libdrm)
 
 latest_version() {
-  curl -sf "https://git.felo.gg/api/v1/repos/$UPSTREAM_REPO/releases/latest" \
-    | jq -r '.tag_name' | sed 's/^v//; s/-/.r/'
+  gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//; s/-/.r/'
 }
 
 # read_tag_file <tag> <path> - a file of the release tag, whitespace stripped
 read_tag_file() {
-  curl -sf "https://git.felo.gg/$UPSTREAM_REPO/raw/tag/$1/$2" \
+  gh api "repos/$UPSTREAM_REPO/contents/$2?ref=$1" -H 'Accept: application/vnd.github.raw' \
     | tr -d '[:space:]'
 }
 
@@ -49,7 +48,7 @@ refresh_checksums() {
     return 1
   fi
 
-  sha_patches="$(curl -sfL "https://git.felo.gg/$UPSTREAM_REPO/archive/$tag.tar.gz" \
+  sha_patches="$(curl -sfL "https://github.com/$UPSTREAM_REPO/archive/refs/tags/$tag.tar.gz" \
     | sha256sum | cut -d' ' -f1)"
   sha_upstream="$(curl -sfL "https://github.com/modrinth/code/archive/refs/tags/$upstream.tar.gz" \
     | sha256sum | cut -d' ' -f1)"
