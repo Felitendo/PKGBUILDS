@@ -1,4 +1,4 @@
-# concat - Concat (https://github.com/jub0t/Concat), a free and open-source
+# concat - Concat (https://github.com/jub0t/concat), a free and open-source
 # CapCut replacement.
 #
 # Source package: the PKGBUILD builds the editor from the release tarball -
@@ -27,7 +27,7 @@
 # publication date, only tags that start with a version count, and pkgver
 # drops the hyphens - see concat-bin/pkg.sh.
 
-UPSTREAM_REPO="jub0t/Concat"
+UPSTREAM_REPO="jub0t/concat"
 
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(rust cmake clang pkgconf ffmpeg onnxruntime-cpu alsa-lib fontconfig freetype2)
