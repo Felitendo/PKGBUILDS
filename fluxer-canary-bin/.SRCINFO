@@ -1,0 +1,20 @@
+pkgbase = fluxer-canary-bin
+	pkgdesc = Fluxer Canary Desktop Application
+	pkgver = 2026.1015.145307
+	pkgrel = 1
+	url = https://fluxer.app
+	arch = x86_64
+	arch = aarch64
+	license = AGPL-3.0-only
+	depends = gtk3
+	depends = nss
+	depends = alsa-lib
+	options = !strip
+	source = fluxer-canary.desktop
+	sha256sums = 0435d76ef93c99abd3f772984aa4d535149900c3a810ffba1676f3a4c98134ac
+	source_x86_64 = fluxer-canary-2026.1015.145307-x64.tar.gz::https://pkgs.fluxer.com/desktop/canary/linux/x64/2026.1015.145307/tar_gz
+	sha256sums_x86_64 = d0bd629d4b19c7dc684b79794872747cfa7d362a26469c7036c2befcd9264743
+	source_aarch64 = fluxer-canary-2026.1015.145307-arm64.tar.gz::https://pkgs.fluxer.com/desktop/canary/linux/arm64/2026.1015.145307/tar_gz
+	sha256sums_aarch64 = d5847e265b54ce9cd4d68cf3856e59e4d50e21fdc9d2c13966d20b9a0f77d0a5
+
+pkgname = fluxer-canary-bin
