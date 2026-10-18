@@ -1,10 +1,13 @@
 post_install() {
   cat <<'MSG'
 
-  FusionFix is installed but not active yet. Copy it into the game folder,
-  the one with GTAIV.exe:
+  FusionFix is installed but not active yet. Copy it into the game folder
+  as your own user, not with sudo:
 
-    gtaiv-eflc-fusionfix-install "/path/to/GTAIV"
+    gtaiv-eflc-fusionfix-install
+
+  That finds the game in your Steam libraries. For any other copy, pass the
+  folder with GTAIV.exe.
 
   Under Proton or Wine the game must load dinput8.dll from that folder. Set
   this as the game's Steam launch options:
@@ -23,6 +26,16 @@ post_upgrade() {
 
   Run gtaiv-eflc-fusionfix-install again to update the copy in your game
   folder.
+
+MSG
+}
+
+pre_remove() {
+  cat <<'MSG'
+
+  The copy in your game folder stays. To remove it, delete d3d9.dll,
+  d3d9.cfg, dinput8.dll, vulkan.dll and plugins/GTAIV.EFLC.FusionFix.*
+  there, and update/ unless other mods use it.
 
 MSG
 }

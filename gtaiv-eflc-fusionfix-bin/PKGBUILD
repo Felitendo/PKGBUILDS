@@ -4,7 +4,7 @@
 
 pkgname=gtaiv-eflc-fusionfix-bin
 pkgver=5.1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Mod that fixes and improves Grand Theft Auto IV: The Complete Edition, for Proton and Wine (upstream binary)"
 # Windows DLLs and game data, loaded by the game under Proton or Wine
 arch=('any')
@@ -44,14 +44,28 @@ package() {
 
   install -Dm755 /dev/stdin "$pkgdir/usr/bin/gtaiv-eflc-fusionfix-install" <<'EOF'
 #!/bin/sh
-# Copies FusionFix into a GTA IV: The Complete Edition folder.
+# Copies FusionFix into a GTA IV: The Complete Edition folder. Without an
+# argument it looks for the game in the Steam libraries.
 set -e
-if [ "$#" -ne 1 ] || [ ! -f "$1/GTAIV.exe" ]; then
-  echo "usage: ${0##*/} <game folder with GTAIV.exe>" >&2
+find_game() {
+  for vdf in "$HOME/.local/share/Steam/steamapps/libraryfolders.vdf" \
+             "$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/libraryfolders.vdf"; do
+    [ -f "$vdf" ] && sed -n 's/^[[:space:]]*"path"[[:space:]]*"\(.*\)"$/\1/p' "$vdf"
+  done | while IFS= read -r lib; do
+    if [ -f "$lib/steamapps/common/Grand Theft Auto IV/GTAIV/GTAIV.exe" ]; then
+      echo "$lib/steamapps/common/Grand Theft Auto IV/GTAIV"
+      break
+    fi
+  done
+}
+dir=${1:-$(find_game)}
+if [ ! -f "$dir/GTAIV.exe" ]; then
+  echo "No GTAIV.exe in ${dir:-the Steam libraries}." >&2
+  echo "usage: ${0##*/} [game folder with GTAIV.exe]" >&2
   exit 1
 fi
-cp -r /usr/share/gtaiv-eflc-fusionfix/. "$1/"
-echo "FusionFix copied to $1"
+cp -r /usr/share/gtaiv-eflc-fusionfix/. "$dir/"
+echo "FusionFix copied to $dir"
 EOF
 
   install -Dm644 "$srcdir/$pkgname-$pkgver-license" \
