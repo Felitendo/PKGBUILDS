@@ -6,5 +6,6 @@
 */src/
 */pkg/
 *.deb
+*.zip
 *.AppImage
 *.flatpak
