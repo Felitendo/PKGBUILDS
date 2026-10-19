@@ -1,11 +1,13 @@
 name: Notify
 
-# Opens an issue when a package fails to update on main, so it reaches GitHub's
-# notifications, the mobile app and email. One issue per package: a broken
-# package must not hide behind another one, and a run of only some packages
-# must not close the issues of the others. A later failure refreshes the issue
-# instead of commenting, as the schedule would otherwise add one every 6 hours.
-# The next successful update of that package closes it again.
+# Opens an issue when a package fails to update on main twice in a row, so it
+# reaches GitHub's notifications, the mobile app and email. A single failure is
+# often just the AUR or upstream not answering, and the next run fixes it. One
+# issue per package: a broken package must not hide behind another one, and a
+# run of only some packages must not close the issues of the others. A later
+# failure refreshes the issue instead of commenting, as the schedule would
+# otherwise add one every 6 hours. The next successful update of that package
+# closes it again.
 
 on:
   workflow_run:
@@ -38,6 +40,9 @@ jobs:
           EVENT: ${{ github.event.workflow_run.event }}
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_CREATED: ${{ github.event.workflow_run.created_at }}
+          WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
           SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
@@ -118,6 +123,33 @@ jobs:
             fi
           }
 
+          # The earlier runs on this branch, newest first.
+          previous_runs="$(gh api -X GET "repos/$GH_REPO/actions/workflows/$WORKFLOW_ID/runs" \
+            -f branch="$BRANCH" -f status=completed -f created="<$RUN_CREATED" -F per_page=30 \
+            --jq '.workflow_runs[] | select(.event != "pull_request") | .id')"
+
+          # The jobs of a run, one per line, fetched once.
+          jobs_of() {
+            local file="$RUNNER_TEMP/jobs-$1"
+            [ -f "$file" ] ||
+              gh api --paginate "repos/$GH_REPO/actions/runs/$1/jobs?per_page=100" --jq '.jobs[]' >"$file"
+            cat "$file"
+          }
+
+          # Whether a job also failed the last time it ran. A run of only some
+          # packages, or a cancelled one, says nothing about the others.
+          failed_before() {
+            local run conclusion
+            for run in $previous_runs; do
+              conclusion="$(jobs_of "$run" | jq -r --arg name "$1" 'select(.name == $name) | .conclusion' | head -1)"
+              case "$conclusion" in
+              success) return 1 ;;
+              failure | timed_out) return 0 ;;
+              esac
+            done
+            return 1
+          }
+
           if [ "$CONCLUSION" = startup_failure ]; then
             report "$WORKFLOW is failing" ""
             exit 0
@@ -125,9 +157,16 @@ jobs:
 
           # Cancelled and skipped jobs say nothing about a package.
           while IFS= read -r -u 3 job; do
-            title="$(title_for "$(jq -r .name <<<"$job")")"
+            name="$(jq -r .name <<<"$job")"
+            title="$(title_for "$name")"
             case "$(jq -r .conclusion <<<"$job")" in
             success) close "$title" ;;
-            failure | timed_out) report "$title" "$job" ;;
+            failure | timed_out)
+              if failed_before "$name"; then
+                report "$title" "$job"
+              else
+                echo "$name failed once, the next run decides"
+              fi
+              ;;
             esac
           done 3< <(gh api --paginate "repos/$GH_REPO/actions/runs/$RUN_ID/jobs?per_page=100" --jq '.jobs[]')

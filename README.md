@@ -10,8 +10,9 @@ package's upstream for a new release. When one is found it:
 3. commits the changes back to this repository, and
 4. pushes the package files to the AUR.
 
-If a package fails to update, the [notify workflow](.github/workflows/notify.yml)
-opens an issue for it. The issue closes once that package updates again.
+If a package fails to update in two runs in a row, the
+[notify workflow](.github/workflows/notify.yml) opens an issue for it. The issue
+closes once that package updates again.
 
 ## Ground rule
 
