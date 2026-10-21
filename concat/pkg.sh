@@ -1,4 +1,4 @@
-# concat - Concat (https://github.com/jub0t/concat), a free and open-source
+# concat - Concat (https://github.com/jub0t/Concat), a free and open-source
 # CapCut replacement.
 #
 # Source package: the PKGBUILD builds the editor from the release tarball -
@@ -14,7 +14,9 @@
 # SKIA_BINARIES_URL), so makepkg checksums them rather than having them
 # fetched unverified mid-build. Their names follow upstream's Cargo.lock, so
 # refresh_checksums() reads them from the tarball and syncs _sherpa, _skia
-# and _skia_key in the PKGBUILD.
+# and _skia_key in the PKGBUILD. The tarball's top folder is named after the
+# repository itself, so _srcname is synced from it too: upstream renamed the
+# repository to "Concat" after 0.2.7, which broke the build.
 #
 # The Skia archive's key is <rust-skia commit>-<target>-<Skia features>. The
 # commit comes from the skia-bindings crate (.cargo_vcs_info.json). The
@@ -27,7 +29,7 @@
 # publication date, only tags that start with a version count, and pkgver
 # drops the hyphens - see concat-bin/pkg.sh.
 
-UPSTREAM_REPO="jub0t/concat"
+UPSTREAM_REPO="jub0t/Concat"
 
 # Installed in CI (pacman) before the makepkg test build.
 BUILD_DEPS=(rust cmake clang pkgconf ffmpeg onnxruntime-cpu alsa-lib fontconfig freetype2)
@@ -49,7 +51,7 @@ latest_version() {
 # refresh_checksums <version> <pkgbuild-path>
 refresh_checksums() {
   local ver="$1" pkgbuild="$2"
-  local tag tarball lock flake sherpa skia skia_hash skia_features skia_key
+  local tag tarball top repo lock flake sherpa skia skia_hash skia_features skia_key
   local sha_src sha_sherpa sha_skia archive
 
   tag="$(latest_tag)"
@@ -69,6 +71,13 @@ refresh_checksums() {
   fi
 
   sha_src="$(sha256sum "$tarball" | cut -d' ' -f1)"
+  top="$(tar -tzf "$tarball" | head -1 | cut -d/ -f1)"
+  repo="${top%-${tag#v}}"
+  if [[ -z "$repo" || "$repo" == "$top" ]]; then
+    echo "unexpected top folder \"$top\" in the $tag source tarball" >&2
+    rm -f "$tarball"
+    return 1
+  fi
   # `|| true`, so that a tree that has moved a file or dropped a crate is
   # reported below instead of ending the run on a failed exit status with
   # nothing printed.
@@ -118,6 +127,7 @@ refresh_checksums() {
 
   sed -i \
     -e "s|^_tag=.*|_tag=\"$tag\"|" \
+    -e "s|^_srcname=.*|_srcname=\"$repo-\${_tag#v}\"|" \
     -e "s|^_sherpa=.*|_sherpa=\"$sherpa\"|" \
     -e "s|^_skia=.*|_skia=\"$skia\"|" \
     -e "s|^_skia_key=.*|_skia_key=\"$skia_key\"|" \
