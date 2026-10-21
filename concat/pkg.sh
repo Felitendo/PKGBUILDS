@@ -71,7 +71,9 @@ refresh_checksums() {
   fi
 
   sha_src="$(sha256sum "$tarball" | cut -d' ' -f1)"
-  top="$(tar -tzf "$tarball" | head -1 | cut -d/ -f1)"
+  # awk rather than `head -1`: under pipefail a closed pipe takes tar down
+  # with SIGPIPE and ends the run
+  top="$(tar -tzf "$tarball" | awk -F/ 'NR == 1 { print $1 }')"
   repo="${top%-${tag#v}}"
   if [[ -z "$repo" || "$repo" == "$top" ]]; then
     echo "unexpected top folder \"$top\" in the $tag source tarball" >&2
