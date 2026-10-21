@@ -5,14 +5,14 @@
 # same CMake project upstream hands to linuxdeploy for the AppImage that
 # moondeckbuddy-bin repackages.
 #
-# The tag tarball lacks two inputs of the build, both pinned per release:
-# - resources/ssl is a git submodule (FrogTheFrog/moondeck-keys) holding the
-#   self-signed certificate compiled into Buddy; its commit is read from the
-#   tag's tree.
-# - glaze is pulled by src/lib/json/CMakeLists.txt with FetchContent at
-#   configure time; its GIT_TAG is read from that file, and the PKGBUILD points
-#   FETCHCONTENT_SOURCE_DIR_GLAZE at the matching tarball so build() needs no
-#   network.
+# The tag tarball leaves both of upstream's submodules empty, so each is pinned
+# per release and passed to the build as its own source:
+# - resources/ssl is FrogTheFrog/moondeck-keys, the self-signed certificate
+#   compiled into Buddy.
+# - src/lib/json/glaze is stephenberry/glaze, the JSON library. Up to 1.10.0
+#   CMake pulled it with FetchContent and a GIT_TAG; since 1.11.0 it is a
+#   submodule that src/lib/json/CMakeLists.txt adds with add_subdirectory.
+# Both commits are read from the tag's tree.
 #
 # Releases are created as drafts by upstream's CI and published by hand, so
 # /releases/latest never points at a half-finished release.
@@ -31,11 +31,13 @@ refresh_checksums() {
   local ver="$1" pkgbuild="$2"
   local keys glaze sha_src sha_keys sha_glaze
 
-  keys="$(gh api "repos/$UPSTREAM_REPO/contents/resources/ssl?ref=v$ver" --jq '.sha')"
-  glaze="$(gh api "repos/$UPSTREAM_REPO/contents/src/lib/json/CMakeLists.txt?ref=v$ver" \
-    -H 'Accept: application/vnd.github.raw' | grep -Po 'GIT_TAG\s+v\K[0-9.]+$')"
-  if [[ ! "$keys" =~ ^[0-9a-f]{40}$ || -z "$glaze" ]]; then
-    echo "could not resolve the moondeck-keys commit ($keys) or glaze version ($glaze) of v$ver" >&2
+  # A failed lookup is emptied rather than left to set -e: a submodule upstream
+  # moved or renamed is then named by the message below. gh prints the error
+  # body on stdout, so the empty assignment also keeps it out of the message.
+  keys="$(gh api "repos/$UPSTREAM_REPO/contents/resources/ssl?ref=v$ver" --jq '.sha')" || keys=""
+  glaze="$(gh api "repos/$UPSTREAM_REPO/contents/src/lib/json/glaze?ref=v$ver" --jq '.sha')" || glaze=""
+  if [[ ! "$keys" =~ ^[0-9a-f]{40}$ || ! "$glaze" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "could not resolve the moondeck-keys ($keys) or glaze ($glaze) commit of v$ver" >&2
     return 1
   fi
 
@@ -43,12 +45,12 @@ refresh_checksums() {
     | sha256sum | cut -d' ' -f1)"
   sha_keys="$(curl -sfL "https://github.com/FrogTheFrog/moondeck-keys/archive/$keys.tar.gz" \
     | sha256sum | cut -d' ' -f1)"
-  sha_glaze="$(curl -sfL "https://github.com/stephenberry/glaze/archive/refs/tags/v$glaze.tar.gz" \
+  sha_glaze="$(curl -sfL "https://github.com/stephenberry/glaze/archive/$glaze.tar.gz" \
     | sha256sum | cut -d' ' -f1)"
 
   sed -i \
     -e "s|^_keys_commit=.*|_keys_commit=\"$keys\"|" \
-    -e "s|^_glaze_ver=.*|_glaze_ver=\"$glaze\"|" \
+    -e "s|^_glaze_commit=.*|_glaze_commit=\"$glaze\"|" \
     -e "s|^sha256sums=.*|sha256sums=('$sha_src' '$sha_keys' '$sha_glaze')|" \
     "$pkgbuild"
 }
