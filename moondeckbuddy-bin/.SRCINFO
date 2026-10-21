@@ -1,6 +1,6 @@
 pkgbase = moondeckbuddy-bin
 	pkgdesc = Host companion that lets the MoonDeck Steam Deck plugin control Steam and the PC (upstream AppImage)
-	pkgver = 1.10.0
+	pkgver = 1.11.0
 	pkgrel = 1
 	url = https://github.com/FrogTheFrog/moondeck-buddy
 	arch = x86_64
@@ -21,12 +21,12 @@ pkgbase = moondeckbuddy-bin
 	provides = moondeckbuddy
 	conflicts = moondeckbuddy
 	conflicts = moondeckbuddy-appimage
-	noextract = moondeckbuddy-bin-1.10.0.AppImage
+	noextract = moondeckbuddy-bin-1.11.0.AppImage
 	options = !strip
 	options = !debug
-	source = moondeckbuddy-bin-1.10.0.AppImage::https://github.com/FrogTheFrog/moondeck-buddy/releases/download/v1.10.0/MoonDeckBuddy-1.10.0-x86_64.AppImage
-	source = LICENSE-1.10.0::https://raw.githubusercontent.com/FrogTheFrog/moondeck-buddy/v1.10.0/LICENSE
-	sha256sums = 51960ec27f897818e10f6e06a3c8994eebfd05c58c9c51ed89cad5b53caa5a46
+	source = moondeckbuddy-bin-1.11.0.AppImage::https://github.com/FrogTheFrog/moondeck-buddy/releases/download/v1.11.0/MoonDeckBuddy-1.11.0-x86_64.AppImage
+	source = LICENSE-1.11.0::https://raw.githubusercontent.com/FrogTheFrog/moondeck-buddy/v1.11.0/LICENSE
+	sha256sums = ab0e09d2b00f8004ef2c3cdb0ac3f49c85bc0762968168203a3df8c8ec976d47
 	sha256sums = a5681bf9b05db14d86776930017c647ad9e6e56ff6bbcfdf21e5848288dfaf1b
 
 pkgname = moondeckbuddy-bin

@@ -3,7 +3,7 @@
 # https://github.com/Felitendo/PKGBUILDS
 
 pkgname=moondeckbuddy-bin
-pkgver=1.10.0
+pkgver=1.11.0
 pkgrel=1
 pkgdesc="Host companion that lets the MoonDeck Steam Deck plugin control Steam and the PC (upstream AppImage)"
 arch=('x86_64')
@@ -20,7 +20,7 @@ options=('!strip' '!debug')
 source=("${pkgname}-${pkgver}.AppImage::https://github.com/FrogTheFrog/moondeck-buddy/releases/download/v${pkgver}/MoonDeckBuddy-${pkgver}-x86_64.AppImage"
         "LICENSE-${pkgver}::https://raw.githubusercontent.com/FrogTheFrog/moondeck-buddy/v${pkgver}/LICENSE")
 noextract=("${pkgname}-${pkgver}.AppImage")
-sha256sums=('51960ec27f897818e10f6e06a3c8994eebfd05c58c9c51ed89cad5b53caa5a46' 'a5681bf9b05db14d86776930017c647ad9e6e56ff6bbcfdf21e5848288dfaf1b')
+sha256sums=('ab0e09d2b00f8004ef2c3cdb0ac3f49c85bc0762968168203a3df8c8ec976d47' 'a5681bf9b05db14d86776930017c647ad9e6e56ff6bbcfdf21e5848288dfaf1b')
 
 prepare() {
   chmod +x "$srcdir/${pkgname}-${pkgver}.AppImage"
