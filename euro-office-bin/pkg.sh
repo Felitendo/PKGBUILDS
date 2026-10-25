@@ -11,11 +11,13 @@
 # editors), which neither makepkg nor the CI runner can do.
 # euro-office-desktopeditors-git on the AUR runs that Docker build.
 #
-# Stable tags are v<version>-<build> (v9.3.5-2); betas and release candidates
-# are prereleases, so /releases/latest only ever sees stable ones. pkgver
-# turns the hyphen into an underscore (9.3.5_2). The release API lists a
-# sha256 digest per asset, so a new version needs no download here; the CI
-# test build checks the sums against the real files anyway.
+# Betas and release candidates are prereleases, so /releases/latest only ever
+# sees stable ones. Stable tags come with or without a build number (v9.3.5-2,
+# v9.3.6), and pkgver turns the hyphen into an underscore (9.3.5_2, 9.3.6).
+# The .deb always carries one (9.3.6-0 under v9.3.6), so its version is read
+# from the release into _debver. The release API lists a sha256 digest per
+# asset, so a new version needs no download here; the CI test build checks
+# the sums against the real files anyway.
 
 UPSTREAM_REPO="Euro-Office/DesktopEditors"
 
@@ -27,7 +29,7 @@ latest_version() {
 # refresh_checksums <version> <pkgbuild-path>
 refresh_checksums() {
   local ver="$1" pkgbuild="$2"
-  local tag assets arch sha sha_amd64 sha_arm64
+  local tag assets debver arch name sha sha_amd64 sha_arm64
 
   tag="v${ver/_/-}"
   if ! assets="$(gh api "repos/$UPSTREAM_REPO/releases/tags/$tag" --jq '.assets')"; then
@@ -35,20 +37,31 @@ refresh_checksums() {
     return 1
   fi
 
-  # the names are checked against what the PKGBUILD builds from pkgver, so a
+  # the .deb version must belong to the tag: 9.3.6-0 under v9.3.6, 9.3.5-2
+  # under v9.3.5-2
+  debver="$(jq -r '.[].name | capture("^euro-office-euro-office_(?<v>.+)_amd64\\.deb$").v' \
+    <<< "$assets")"
+  if [[ "$debver" != "${tag#v}" && "$debver" != "${tag#v}"-* ]]; then
+    echo "$tag has no euro-office-euro-office_<version>_amd64.deb that matches it" \
+         "(found: ${debver:-none})" >&2
+    return 1
+  fi
+
+  # the names are checked against what the PKGBUILD builds from _debver, so a
   # release that renames its packages fails here and not in the test build
   for arch in amd64 arm64; do
-    sha="$(jq -r --arg n "euro-office-euro-office_${ver/_/-}_$arch.deb" \
-      '.[] | select(.name == $n) | .digest // empty' <<< "$assets" \
+    name="euro-office-euro-office_${debver}_$arch.deb"
+    sha="$(jq -r --arg n "$name" '.[] | select(.name == $n) | .digest // empty' <<< "$assets" \
       | sed 's/^sha256://')"
     if [[ ! "$sha" =~ ^[0-9a-f]{64}$ ]]; then
-      echo "$tag has no euro-office-euro-office_${ver/_/-}_$arch.deb with a sha256 digest" >&2
+      echo "$tag has no $name with a sha256 digest" >&2
       return 1
     fi
     printf -v "sha_$arch" '%s' "$sha"
   done
 
   sed -i \
+    -e "s|^_debver=.*|_debver=\"$debver\"|" \
     -e "s|^sha256sums_x86_64=.*|sha256sums_x86_64=('$sha_amd64')|" \
     -e "s|^sha256sums_aarch64=.*|sha256sums_aarch64=('$sha_arm64')|" \
     "$pkgbuild"
