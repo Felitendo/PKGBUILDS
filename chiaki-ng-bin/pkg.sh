@@ -1,4 +1,4 @@
-# chiaki-ng-bin - chiaki-ng (https://github.com/streetpea/chiaki-ng), a free
+# chiaki-ng-bin - chiaki-ng (https://github.com/chiaki-ng/chiaki-ng), a free
 # PlayStation Remote Play client (C/C++ + Qt6).
 #
 # Upstream publishes an AppImage per release, which the PKGBUILD unpacks and
@@ -6,7 +6,7 @@
 # checksums are refreshed on a new version. The license texts are not part of
 # the AppImage and come from the matching source tag.
 
-UPSTREAM_REPO="streetpea/chiaki-ng"
+UPSTREAM_REPO="chiaki-ng/chiaki-ng"
 
 latest_version() {
   gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//'
