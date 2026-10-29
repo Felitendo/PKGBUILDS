@@ -60,7 +60,7 @@ refresh_checksums() {
   local ver="$1" pkgbuild="$2"
   local sha_desktop sha_x64 sha_arm64
 
-  sha_desktop="$(sha256sum "$(dirname "$pkgbuild")/fluxer.desktop" | cut -d' ' -f1)"
+  sha_desktop="$(sha256sum "$(dirname "$pkgbuild")/app.fluxer.FluxerDesktop.desktop" | cut -d' ' -f1)"
   sha_x64="$(_artifact_sha x64 "$ver")" || return 1
   sha_arm64="$(_artifact_sha arm64 "$ver")" || return 1
 

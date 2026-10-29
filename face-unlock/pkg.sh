@@ -14,8 +14,7 @@ UPSTREAM_REPO="LoonixTools/face-unlock"
 BUILD_DEPS=(cmake scdoc gettext opencv qt6-base qt6-declarative layer-shell-qt ki18n pam systemd-libs)
 
 latest_version() {
-  curl -sf "https://api.github.com/repos/$UPSTREAM_REPO/releases/latest" \
-    | jq -r '.tag_name' | sed 's/^v//'
+  gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//'
 }
 
 # refresh_checksums <version> <pkgbuild-path>

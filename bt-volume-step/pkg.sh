@@ -12,8 +12,7 @@ UPSTREAM_REPO="LoonixTools/bt-volume-step"
 BUILD_DEPS=(python)
 
 latest_version() {
-  curl -sf "https://api.github.com/repos/$UPSTREAM_REPO/releases/latest" \
-    | jq -r '.tag_name' | sed 's/^v//'
+  gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//'
 }
 
 # refresh_checksums <version> <pkgbuild-path>

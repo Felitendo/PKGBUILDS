@@ -21,8 +21,18 @@ UPSTREAM_REPO="Obiente/native"
 
 # newest release whose tag looks like a version (skips nightly-*/channel-*)
 latest_tag() {
-  gh api "repos/$UPSTREAM_REPO/releases?per_page=100" \
-    --jq '[.[] | select(.tag_name | test("^v[0-9]"))] | .[0].tag_name'
+  local page tag
+  # nightly-* releases pile up in front of the versioned ones and can push
+  # them off the first page
+  for page in 1 2 3 4 5; do
+    tag="$(gh api "repos/$UPSTREAM_REPO/releases?per_page=100&page=$page" \
+      --jq '[.[] | select(.tag_name | test("^v[0-9]"))] | .[0].tag_name // empty')"
+    if [[ -n "$tag" ]]; then
+      echo "$tag"
+      return
+    fi
+  done
+  return 1
 }
 
 tag_to_pkgver() {

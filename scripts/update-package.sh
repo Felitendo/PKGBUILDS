@@ -182,7 +182,9 @@ fi
 printf '%s\n' "$clone_log"
 
 # every tracked file of the package except our automation glue belongs on
-# the AUR (PKGBUILD, .SRCINFO, .desktop files, .install files, ...)
+# the AUR (PKGBUILD, .SRCINFO, .desktop files, .install files, ...), and
+# nothing else: a file removed or renamed here goes from the AUR too
+find "$aurdir" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 while IFS= read -r f; do
   [[ "$(basename "$f")" == "pkg.sh" ]] && continue
   cp "$f" "$aurdir/"
