@@ -6,9 +6,10 @@
 # are refreshed. Upstream currently publishes on the "ow" electron-updater
 # channel (latest-ow-linux.yml) with an -ow filename suffix; the old plain
 # channel (latest-linux.yml) went stale but is still checked in case they
-# switch back - whichever carries the higher version wins.
+# switch back - whichever carries the higher version wins. Releases moved from
+# launcherupdates.lunarclientcdn.com, which stopped at 3.7.17, to this host.
 
-DL_BASE="https://launcherupdates.lunarclientcdn.com"
+DL_BASE="https://launcher-releases.lunarclientprod.com/master/6e18b5a4f4ebbd4c7ecff572f1700cedce1f248bcb157adce5ec49be9e081a23"
 
 _channel_version() {
   curl -sf "$DL_BASE/$1" | grep -Po '^version: \K\S+'
