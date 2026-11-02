@@ -7,7 +7,7 @@ pkgver=1.11.0
 pkgrel=1
 pkgdesc="Host companion that lets the MoonDeck Steam Deck plugin control Steam and the PC (upstream AppImage)"
 arch=('x86_64')
-url="https://github.com/FrogTheFrog/moondeck-buddy"
+url="https://github.com/MoonDeckTeam/moondeck-buddy"
 license=('LGPL-3.0-only')
 # the AppImage bundles Qt6, OpenSSL, glib, libproc2 and the xcb stack; these
 # are what is left over (bash runs upstream's AppRun)
@@ -17,8 +17,8 @@ depends=('bash' 'e2fsprogs' 'fontconfig' 'freetype2' 'glibc'
 provides=('moondeckbuddy')
 conflicts=('moondeckbuddy' 'moondeckbuddy-appimage')
 options=('!strip' '!debug')
-source=("${pkgname}-${pkgver}.AppImage::https://github.com/FrogTheFrog/moondeck-buddy/releases/download/v${pkgver}/MoonDeckBuddy-${pkgver}-x86_64.AppImage"
-        "LICENSE-${pkgver}::https://raw.githubusercontent.com/FrogTheFrog/moondeck-buddy/v${pkgver}/LICENSE")
+source=("${pkgname}-${pkgver}.AppImage::https://github.com/MoonDeckTeam/moondeck-buddy/releases/download/v${pkgver}/MoonDeckBuddy-${pkgver}-x86_64.AppImage"
+        "LICENSE-${pkgver}::https://raw.githubusercontent.com/MoonDeckTeam/moondeck-buddy/v${pkgver}/LICENSE")
 noextract=("${pkgname}-${pkgver}.AppImage")
 sha256sums=('ab0e09d2b00f8004ef2c3cdb0ac3f49c85bc0762968168203a3df8c8ec976d47' 'a5681bf9b05db14d86776930017c647ad9e6e56ff6bbcfdf21e5848288dfaf1b')
 

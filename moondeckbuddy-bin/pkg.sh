@@ -1,4 +1,4 @@
-# moondeckbuddy-bin - MoonDeck Buddy (https://github.com/FrogTheFrog/moondeck-buddy),
+# moondeckbuddy-bin - MoonDeck Buddy (https://github.com/MoonDeckTeam/moondeck-buddy),
 # the host-side companion of the MoonDeck Steam Deck plugin (C++23 + Qt6).
 #
 # Upstream publishes a linuxdeploy AppImage per release, which the PKGBUILD
@@ -9,7 +9,7 @@
 # Releases are created as drafts by upstream's CI and published by hand, so
 # /releases/latest never points at a release whose assets are still missing.
 
-UPSTREAM_REPO="FrogTheFrog/moondeck-buddy"
+UPSTREAM_REPO="MoonDeckTeam/moondeck-buddy"
 
 # The AUR already carries moondeckbuddy-appimage, which ships the same upstream
 # AppImage, so publishing this as well would be a second copy of one package.
