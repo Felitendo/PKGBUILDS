@@ -8,13 +8,13 @@
 # Skia renderer. (Until 0.2.4 the flake used FemtoVG over wgpu instead; main
 # dropped that option.)
 #
-# Two build scripts download prebuilt static libraries: sherpa-onnx-sys (text
-# to speech) and skia-bindings (Skia). The PKGBUILD lists both archives as
-# sources and points the build scripts at them (SHERPA_ONNX_ARCHIVE_DIR,
-# SKIA_BINARIES_URL), so makepkg checksums them rather than having them
-# fetched unverified mid-build. Their names follow upstream's Cargo.lock, so
-# refresh_checksums() reads them from the tarball and syncs _sherpa, _skia
-# and _skia_key in the PKGBUILD. The tarball's top folder is named after the
+# The skia-bindings build script downloads prebuilt Skia libraries. The
+# PKGBUILD lists that archive as a source and points the build script at it
+# (SKIA_BINARIES_URL), so makepkg checksums it rather than having it fetched
+# unverified mid-build. Its name follows upstream's Cargo.lock, so
+# refresh_checksums() reads it from the tarball and syncs _skia and _skia_key
+# in the PKGBUILD. (sherpa-onnx-sys, text to speech, did the same until 0.2.8;
+# 0.2.9 dropped it.) The tarball's top folder is named after the
 # repository itself, so _srcname is synced from it too: upstream renamed the
 # repository to "Concat" after 0.2.7, which broke the build.
 #
@@ -51,8 +51,8 @@ latest_version() {
 # refresh_checksums <version> <pkgbuild-path>
 refresh_checksums() {
   local ver="$1" pkgbuild="$2"
-  local tag tarball top repo lock flake sherpa skia skia_hash skia_features skia_key
-  local sha_src sha_sherpa sha_skia archive
+  local tag tarball top repo lock flake skia skia_hash skia_features skia_key
+  local sha_src sha_skia archive
 
   tag="$(latest_tag)"
   if [[ "$(tag_to_pkgver <<< "$tag")" != "$ver" ]]; then
@@ -87,12 +87,10 @@ refresh_checksums() {
   flake="$(tar -xOzf "$tarball" --wildcards '*/flake.nix' 2>/dev/null || true)"
   rm -f "$tarball"
 
-  sherpa="$(grep -A2 '^name = "sherpa-onnx-sys"' <<< "$lock" \
-    | sed -n 's/^version = "\(.*\)"/\1/p' || true)"
   skia="$(grep -A2 '^name = "skia-bindings"' <<< "$lock" \
     | sed -n 's/^version = "\(.*\)"/\1/p' || true)"
-  if [[ -z "$sherpa" || -z "$skia" ]]; then
-    echo "could not read the sherpa-onnx-sys and skia-bindings versions from $tag's src/Cargo.lock" >&2
+  if [[ -z "$skia" ]]; then
+    echo "could not read the skia-bindings version from $tag's src/Cargo.lock" >&2
     return 1
   fi
 
@@ -109,13 +107,6 @@ refresh_checksums() {
   skia_key="$skia_hash-x86_64-unknown-linux-gnu-$skia_features"
 
   archive="$(mktemp)"
-  if ! curl -sfL -o "$archive" \
-       "https://github.com/k2-fsa/sherpa-onnx/releases/download/v$sherpa/sherpa-onnx-v$sherpa-linux-x64-static-lib.tar.bz2"; then
-    rm -f "$archive"
-    echo "could not download the sherpa-onnx $sherpa static-lib archive" >&2
-    return 1
-  fi
-  sha_sherpa="$(sha256sum "$archive" | cut -d' ' -f1)"
   # a missing archive most likely means the features are wrong: check the
   # "TRYING TO DOWNLOAD AND INSTALL SKIA BINARIES" line of a build log
   if ! curl -sfL -o "$archive" \
@@ -130,9 +121,8 @@ refresh_checksums() {
   sed -i \
     -e "s|^_tag=.*|_tag=\"$tag\"|" \
     -e "s|^_srcname=.*|_srcname=\"$repo-\${_tag#v}\"|" \
-    -e "s|^_sherpa=.*|_sherpa=\"$sherpa\"|" \
     -e "s|^_skia=.*|_skia=\"$skia\"|" \
     -e "s|^_skia_key=.*|_skia_key=\"$skia_key\"|" \
-    -e "s|^sha256sums=.*|sha256sums=('$sha_src' '$sha_sherpa' '$sha_skia')|" \
+    -e "s|^sha256sums=.*|sha256sums=('$sha_src' '$sha_skia')|" \
     "$pkgbuild"
 }
