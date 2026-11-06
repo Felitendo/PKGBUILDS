@@ -9,6 +9,10 @@
 # Every release is a prerelease tagged build-N, N being upstream's CI run
 # number, so /releases/latest finds nothing and pkgver is N. The oldest
 # releases used other tags (nx2-build-34) and are skipped.
+#
+# The PGO AppImage is preferred. Some releases lack it (build-88), so then
+# both arches take the standard AppImage, which the same CI step packages.
+# refresh_checksums() syncs _flavor in the PKGBUILD to match.
 
 UPSTREAM_REPO="zortos293/Lichii"
 
@@ -21,20 +25,25 @@ latest_version() {
 # refresh_checksums <version> <pkgbuild-path>
 refresh_checksums() {
   local ver="$1" pkgbuild="$2"
-  local release arch sha sha_x86_64 sha_aarch64
+  local release flavor arch sha sha_x86_64="" sha_aarch64=""
 
   release="$(gh api "repos/$UPSTREAM_REPO/releases/tags/build-$ver")"
-  for arch in x86_64 aarch64; do
-    sha="$(jq -r --arg n "lichii-linux-$arch-pgo.AppImage" \
-      '.assets[] | select(.name == $n) | .digest' <<< "$release" | sed 's/^sha256://')"
-    if [[ ! "$sha" =~ ^[0-9a-f]{64}$ ]]; then
-      echo "build-$ver has no lichii-linux-$arch-pgo.AppImage with a sha256" >&2
-      return 1
-    fi
-    printf -v "sha_$arch" '%s' "$sha"
+  for flavor in -pgo ""; do
+    for arch in x86_64 aarch64; do
+      sha="$(jq -r --arg n "lichii-linux-$arch$flavor.AppImage" \
+        '.assets[] | select(.name == $n) | .digest' <<< "$release" | sed 's/^sha256://')"
+      [[ "$sha" =~ ^[0-9a-f]{64}$ ]] || continue 2
+      printf -v "sha_$arch" '%s' "$sha"
+    done
+    break
   done
+  if [[ -z "$sha_x86_64" || -z "$sha_aarch64" ]]; then
+    echo "build-$ver has no x86_64 and aarch64 AppImage pair with a sha256" >&2
+    return 1
+  fi
 
   sed -i \
+    -e "s|^_flavor=.*|_flavor=\"$flavor\"|" \
     -e "s|^sha256sums_x86_64=.*|sha256sums_x86_64=('$sha_x86_64')|" \
     -e "s|^sha256sums_aarch64=.*|sha256sums_aarch64=('$sha_aarch64')|" \
     "$pkgbuild"
