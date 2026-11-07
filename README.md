@@ -43,6 +43,7 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 
 | Package | Upstream | Upstream deliverable | AUR |
 |---|---|---|---|
+| `anker-launcher-bin` | [zororver/anker-launcher](https://github.com/zororver/anker-launcher): desktop client for AnkerGames | AppImage | [anker-launcher-bin](https://aur.archlinux.org/packages/anker-launcher-bin) |
 | `bottles-opener` | [LoonixTools/bottles-opener](https://github.com/LoonixTools/bottles-opener) — double-click a file and it opens in its Windows program inside Bottles, with the file types and icons from the bottle's registry | *built from source* | [bottles-opener](https://aur.archlinux.org/packages/bottles-opener) |
 | `bt-volume-step` | [LoonixTools/bt-volume-step](https://github.com/LoonixTools/bt-volume-step) — corrects the coarse internal volume grid of Bluetooth audio devices on PipeWire | *built from source* | [bt-volume-step](https://aur.archlinux.org/packages/bt-volume-step) |
 | `cachy-auto-update` | [LoonixTools/cachy-auto-update](https://github.com/LoonixTools/cachy-auto-update) — unattended background updates for CachyOS (pacman, AUR, Flatpak, AppImages) | *built from source* | [cachy-auto-update](https://aur.archlinux.org/packages/cachy-auto-update) |
