@@ -14,14 +14,10 @@ latest_version() {
 # refresh_checksums <version> <pkgbuild-path>
 refresh_checksums() {
   local ver="$1" pkgbuild="$2"
-  local sha_img sha_readme
+  local sha_img
 
   sha_img="$(set -o pipefail; curl -fsSL "https://github.com/$UPSTREAM_REPO/releases/download/v$ver/AnkerLauncher-$ver-x86_64.AppImage" \
     | sha256sum | cut -d' ' -f1)" || return 1
-  sha_readme="$(set -o pipefail; curl -fsSL "https://raw.githubusercontent.com/$UPSTREAM_REPO/v$ver/README.md" \
-    | sha256sum | cut -d' ' -f1)" || return 1
 
-  sed -i \
-    -e "s|^sha256sums=.*|sha256sums=('$sha_img'\n            '$sha_readme')|" \
-    "$pkgbuild"
+  sed -i "s|^sha256sums=.*|sha256sums=('$sha_img')|" "$pkgbuild"
 }
