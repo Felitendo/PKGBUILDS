@@ -17,10 +17,12 @@ on:
         default: ''
   push:
     branches: [main]
+    # a push only updates the packages it changed (PKGBUILD, pkg.sh,
+    # .desktop, ...). A change to the shared script alone waits for the next
+    # scheduled run, or a manual one.
     paths:
-      # any package file (PKGBUILD, pkg.sh, .desktop, ...) and the shared script
       - '*/*'
-      - '.github/workflows/update.yml'
+      - '!scripts/**'
 
 # Never run twice at once: concurrent runs race on pushing to this repository
 # and to the AUR (e.g. a push-triggered run and a manual dispatch both creating
@@ -39,10 +41,29 @@ jobs:
       packages: ${{ steps.list.outputs.packages }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          # the whole history, so a push can be diffed against the commit before it
+          fetch-depth: 0
       - id: list
         env:
           PACKAGES: ${{ inputs.package }}
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
         run: |
+          # a push: only the package directories it changed. If the commit
+          # before it is unknown (a force push), fall back to all packages
+          if [ "$EVENT" = push ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            PACKAGES=$(git diff --name-only "$BEFORE" "$GITHUB_SHA" \
+              | sed -n 's|^\([^/]*\)/.*|\1|p' | sort -u \
+              | while read -r p; do if [ -f "$p/PKGBUILD" ]; then echo "$p"; fi; done \
+              | paste -sd, -)
+            if [ -z "$PACKAGES" ]; then
+              echo "this push changed no package"
+              echo "packages=[]" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "changed packages: $PACKAGES"
+          fi
           if [ -n "$PACKAGES" ]; then
             # split on commas, trim, drop empty entries and duplicates, keep
             # the given order (it is the build order)

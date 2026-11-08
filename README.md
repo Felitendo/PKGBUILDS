@@ -155,8 +155,9 @@ Then create a directory named after the AUR package containing:
   Other local source files in the directory (`.desktop` files, patches, …) are
   pushed to the AUR alongside `PKGBUILD` and `.SRCINFO`.
 
-The workflow discovers package directories automatically. Trigger a run
-manually via *Actions → Update AUR packages → Run workflow* to publish it
-immediately. To update only some packages, enter their directory names,
+The workflow discovers package directories automatically. A push to `main`
+runs it for the packages that push changed, so a new package is published
+right away. Trigger a run manually via *Actions → Update AUR packages → Run
+workflow* for anything else. To update only some packages, enter their directory names,
 separated by commas (e.g. `concat, plezy-bin`); leave the field empty to update
 all of them.
