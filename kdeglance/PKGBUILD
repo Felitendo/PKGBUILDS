@@ -27,13 +27,13 @@ optdepends=('libreoffice: Office document previews'
             'fluidsynth: MIDI playback'
             'soundfont-fluid: General MIDI SoundFont for fluidsynth')
 install=kdeglance.install
-source=("${url}/releases/download/v${pkgver}/kdeglance-${pkgver}.tar.gz")
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz")
 sha256sums=('0dd06a06916cd233d31fce10bc7aa3379e22157a98907cd06238789791aa22e1')
 
 build() {
   # The tests need LibreOffice, ImageMagick, qpdf and Node.js, so they are
   # left out.
-  cmake -B build -S "kdeglance-${pkgver}" -G Ninja \
+  cmake -B build -S "KDEGlance-${pkgver}" -G Ninja \
     -DCMAKE_BUILD_TYPE=None \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=lib \

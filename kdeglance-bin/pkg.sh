@@ -10,6 +10,10 @@
 # _relver. refresh_checksums() reads the package's .PKGINFO: it syncs the Qt
 # minimum and fails when the other depends no longer match ours.
 #
+# Not every release has a pacman package: 2.0.4 only shipped Fedora RPMs, and
+# upstream kept 2.0.3 as its Arch package. So latest_version() picks the newest
+# release that has one, and this package can lag behind kdeglance.
+#
 # Upstream replaces the assets of a release in place (2.0.1 got a new package
 # twice). CI only refreshes the checksums for a new version, so
 # latest_version() also compares the current version's asset with the
@@ -27,7 +31,10 @@ pkg_asset() {
 
 latest_version() {
   local ver pkgbuild
-  ver="$(gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//')"
+  ver="$(gh api --paginate "repos/$UPSTREAM_REPO/releases" --jq '.[]
+      | select(.draft or .prerelease | not) | (.tag_name | ltrimstr("v")) as $v
+      | select(any(.assets[].name; test("^kdeglance-\($v)-[0-9]+-x86_64\\.pkg\\.tar\\.zst$"))) | $v' \
+    | sort -V | tail -n1)"
   pkgbuild="$(dirname "${BASH_SOURCE[0]}")/PKGBUILD"
   if [[ "$ver" == "$(grep -Po '^pkgver=\K.*' "$pkgbuild")" ]] &&
      ! grep -q "'$(pkg_asset "$ver" | cut -d' ' -f2)'" "$pkgbuild"; then

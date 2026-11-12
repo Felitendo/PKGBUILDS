@@ -1,15 +1,16 @@
 # kdeglance - KDEGlance (https://github.com/AlexGraveler/KDEGlance), a Quick
 # Look-style file preview for KDE Plasma and Dolphin (C++/Qt6, KF6).
 #
-# Source package: builds upstream's source tarball (a release asset, not the
-# tag archive) like upstream's own packaging/arch/PKGBUILD, but without the
-# tests. refresh_checksums() fails when that file's depends or makedepends no
-# longer match ours. GitHub lists the asset's sha256, so nothing is downloaded.
+# Source package: builds the tag archive like upstream's own
+# packaging/arch/PKGBUILD, but without the tests. refresh_checksums() fails
+# when that file's depends or makedepends no longer match ours. Upstream's
+# source tarball asset is not used: it holds the same code, but 2.0.4 shipped
+# without one (only Fedora RPMs).
 #
-# Upstream replaces the assets of a release in place (2.0.1 got a new tag and
-# tarball twice). CI only refreshes the checksums for a new version, so
-# latest_version() also compares the current version's tarball with the
-# PKGBUILD. When it changed, it refreshes, and CI bumps pkgrel.
+# Upstream replaces releases in place (2.0.1 got a new tag twice). CI only
+# refreshes the checksums for a new version, so latest_version() also compares
+# the current version's tag archive with the PKGBUILD. When it changed, it
+# refreshes, and CI bumps pkgrel.
 
 UPSTREAM_REPO="AlexGraveler/KDEGlance"
 
@@ -18,19 +19,21 @@ UPSTREAM_REPO="AlexGraveler/KDEGlance"
 BUILD_DEPS=(cmake ninja pkgconf qt6-base qt6-multimedia qt6-5compat qt6-svg
             kio kservice kcoreaddons kwindowsystem poppler-qt6 libraw)
 
-# tarball_sha <version>: the sha256 GitHub lists for the release's tarball
+# tarball_sha <version>: the sha256 of the tag archive
 tarball_sha() {
-  gh api "repos/$UPSTREAM_REPO/releases/tags/v$1" \
-    --jq ".assets[] | select(.name == \"kdeglance-$1.tar.gz\") | .digest" | sed 's/^sha256://'
+  (set -o pipefail; curl -fsSL "https://github.com/$UPSTREAM_REPO/archive/refs/tags/v$1.tar.gz" \
+    | sha256sum | cut -d' ' -f1)
 }
 
 latest_version() {
-  local ver pkgbuild
+  local ver pkgbuild sha
   ver="$(gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//')"
   pkgbuild="$(dirname "${BASH_SOURCE[0]}")/PKGBUILD"
-  if [[ "$ver" == "$(grep -Po '^pkgver=\K.*' "$pkgbuild")" ]] &&
-     ! grep -q "'$(tarball_sha "$ver")'" "$pkgbuild"; then
-    refresh_checksums "$ver" "$pkgbuild" >&2 || return 1
+  if [[ "$ver" == "$(grep -Po '^pkgver=\K.*' "$pkgbuild")" ]]; then
+    sha="$(tarball_sha "$ver")" || return 1
+    if ! grep -q "'$sha'" "$pkgbuild"; then
+      refresh_checksums "$ver" "$pkgbuild" >&2 || return 1
+    fi
   fi
   echo "$ver"
 }
@@ -59,10 +62,6 @@ refresh_checksums() {
     fi
   done
 
-  sha="$(tarball_sha "$ver")"
-  if [[ ! "$sha" =~ ^[0-9a-f]{64}$ ]]; then
-    echo "v$ver has no kdeglance-$ver.tar.gz with a sha256" >&2
-    return 1
-  fi
+  sha="$(tarball_sha "$ver")" || return 1
   sed -i "s|^sha256sums=.*|sha256sums=('$sha')|" "$pkgbuild"
 }
