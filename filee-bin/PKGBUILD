@@ -25,6 +25,7 @@ optdepends=('libreoffice: Office documents'
 provides=('filee')
 conflicts=('filee')
 options=('!strip' '!debug')
+install=filee-bin.install
 
 source=("com.filee.app.desktop")
 sha256sums=('7924b339c9845b737fc76dc5f779f6d4d63a606990fcccfa40052d4e5a46b596')
@@ -48,6 +49,7 @@ package() {
   # same command name as upstream's install.sh gives the CLI
   install -d "$pkgdir/usr/bin"
   ln -s /opt/filee/filee-cli "$pkgdir/usr/bin/filee"
+  ln -s /opt/filee/Filee "$pkgdir/usr/bin/filee-gui"
 
   install -Dm644 "$srcdir/com.filee.app.desktop" -t "$pkgdir/usr/share/applications"
   install -Dm644 "$_dir/filee.png" "$pkgdir/usr/share/icons/hicolor/512x512/apps/filee.png"
@@ -56,6 +58,18 @@ package() {
   # turn it on in System Settings
   install -d "$pkgdir/usr/share/kwin/scripts"
   cp -r "$_dir/kwin/filee-donut" "$pkgdir/usr/share/kwin/scripts/"
+
+  # GNOME Shell extension for Wayland gestures
+  if [ -d "$_dir/gnome/filee-donut@filee.sh" ]; then
+    install -d "$pkgdir/usr/share/gnome-shell/extensions"
+    cp -r "$_dir/gnome/filee-donut@filee.sh" "$pkgdir/usr/share/gnome-shell/extensions/"
+  fi
+
+  # Hyprland window rule snippet for Wayland
+  if [ -f "$_dir/hyprland/filee-donut.conf" ]; then
+    install -Dm644 "$_dir/hyprland/filee-donut.conf" \
+      "$pkgdir/usr/share/filee/hyprland/filee-donut.conf"
+  fi
 
   install -Dm644 "$_dir/LICENSE" "$_dir/THIRD-PARTY-NOTICES.md" \
     -t "$pkgdir/usr/share/licenses/$pkgname"

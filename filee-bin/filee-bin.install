@@ -1,0 +1,10 @@
+post_install() {
+  echo ">>> Filee: run 'filee' for the CLI, or 'filee-gui' for the graphical app."
+  echo ">>> Hyprland: add 'source = /usr/share/filee/hyprland/filee-donut.conf' to ~/.config/hypr/hyprland.conf"
+  echo ">>> KDE Plasma: enable 'Filee donut' in System Settings > KWin Scripts."
+  echo ">>> GNOME Wayland: enable the 'Filee donut' extension in Extensions."
+}
+
+post_upgrade() {
+  post_install
+}
