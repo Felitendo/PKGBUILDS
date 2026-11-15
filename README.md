@@ -100,6 +100,7 @@ source in the `PKGBUILD` (and drop the `-bin` suffix), or don't package it.
 | `voicenux-bin` | [voicenux/voicenux](https://github.com/voicenux/voicenux): prebuilt release of `voicenux` | Arch tarball | [voicenux-bin](https://aur.archlinux.org/packages/voicenux-bin) |
 | `voicenux-git` | [voicenux/voicenux](https://github.com/voicenux/voicenux): `main` branch of `voicenux` | *built from source* | [voicenux-git](https://aur.archlinux.org/packages/voicenux-git) |
 | `waydroid-helper-bin` | [waydroid-helper/waydroid-helper](https://github.com/waydroid-helper/waydroid-helper) — GTK4 GUI for Waydroid configuration and extensions | AppImage | [waydroid-helper-bin](https://aur.archlinux.org/packages/waydroid-helper-bin) |
+| `waypointer` | [Felitendo/waypointer](https://github.com/Felitendo/waypointer): a tiny hand on a stick that points at things on your screen, the Linux version of TinyHand (Rust, Wayland) | *built from source* | [waypointer](https://aur.archlinux.org/packages/waypointer) |
 | `wiiudownloader-bin` | [Xpl0itU/WiiUDownloader](https://github.com/Xpl0itU/WiiUDownloader) — Wii U title downloader (Go + GTK4) | AppImage | [wiiudownloader-bin](https://aur.archlinux.org/packages/wiiudownloader-bin) |
 | `zapzap-bin` | [rafatosta/zapzap](https://github.com/rafatosta/zapzap) — WhatsApp desktop client (PyQt6 + WebEngine) | wheel | [zapzap-bin](https://aur.archlinux.org/packages/zapzap-bin) |
 
