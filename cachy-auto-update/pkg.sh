@@ -1,15 +1,16 @@
 # cachy-auto-update - unattended background updates for CachyOS
 # (https://github.com/LoonixTools/cachy-auto-update).
 #
-# Pure shell plus a gettext catalog and a scdoc man page, so the PKGBUILD just
-# runs the upstream Makefile against the release tarball. Nothing is prebuilt
-# and nothing is republished - the AUR package builds exactly what the tag
-# contains.
+# Rust since 2.0.0 (a command line and a window drawn with Rune), plus a scdoc
+# man page. The PKGBUILD runs the upstream Makefile against the release
+# tarball. Nothing is prebuilt and nothing is republished: the AUR package
+# builds exactly what the tag contains.
 
 UPSTREAM_REPO="LoonixTools/cachy-auto-update"
 
-# Installed in CI (pacman) before the makepkg test build.
-BUILD_DEPS=(gettext scdoc)
+# Installed in CI (pacman) before the makepkg test build: the makedepends plus
+# the libraries the build links against.
+BUILD_DEPS=(rust scdoc libxkbcommon wayland)
 
 latest_version() {
   gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//'
