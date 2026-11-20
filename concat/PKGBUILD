@@ -56,6 +56,13 @@ _srcname="Concat-${_tag#v}"
 prepare() {
   cd "$_srcname/src"
 
+  # ort's copy-dylibs feature links every library in ORT_LIB_LOCATION into
+  # the target folder, so a binary runs from there. With /usr/lib that is
+  # hundreds of links, and since Rust 1.100 changed the layout of the target
+  # folder it fails the build. The package uses the system's onnxruntime, so
+  # it is turned off. Features are not in Cargo.lock, so --locked still holds.
+  sed -i 's/, "copy-dylibs"//' Cargo.toml
+
   export RUSTUP_TOOLCHAIN=stable
   cargo fetch --locked --target "$(rustc -vV | sed -n 's/^host: //p')"
 }
