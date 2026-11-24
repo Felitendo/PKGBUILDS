@@ -17,7 +17,8 @@ UPSTREAM_REPO="AlexGraveler/KDEGlance"
 # Installed in CI (pacman) before the makepkg test build: the makedepends plus
 # the libraries the build links against.
 BUILD_DEPS=(cmake ninja pkgconf qt6-base qt6-multimedia qt6-5compat qt6-svg
-            kio kservice kcoreaddons kwindowsystem poppler-qt6 libraw)
+            kio kservice kcoreaddons kwindowsystem poppler-qt6 libraw
+            syntax-highlighting)
 
 # tarball_sha <version>: the sha256 of the tag archive
 tarball_sha() {

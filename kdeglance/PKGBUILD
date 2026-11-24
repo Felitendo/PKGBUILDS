@@ -15,7 +15,8 @@ license=('GPL-3.0-or-later')
 depends=('dolphin' 'glibc' 'hicolor-icon-theme' 'kcoreaddons' 'kimageformats'
          'kio' 'kio-fuse' 'kjobwidgets' 'kservice' 'kwindowsystem' 'libgcc'
          'libraw' 'libstdc++' 'poppler-qt6' 'procps-ng' 'qt6-5compat' 'qt6-base'
-         'qt6-imageformats' 'qt6-multimedia' 'qt6-multimedia-ffmpeg' 'qt6-svg')
+         'qt6-imageformats' 'qt6-multimedia' 'qt6-multimedia-ffmpeg' 'qt6-svg'
+         'syntax-highlighting')
 makedepends=('cmake' 'ninja' 'pkgconf')
 optdepends=('libreoffice: Office document previews'
             'kio-extras: SMB and more network protocols'
