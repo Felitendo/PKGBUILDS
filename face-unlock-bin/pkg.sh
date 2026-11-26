@@ -1,7 +1,7 @@
 # face-unlock-bin - the Arch build of face-unlock
 # (https://github.com/LoonixTools/face-unlock), made by upstream's release
-# workflow: the same program as the face-unlock package, with OpenCV linked in
-# statically, so an OpenCV update on Arch does not break it.
+# workflow: the same program as the face-unlock package, without the Rust
+# build.
 #
 # Not every release has the tarball (2.0.0 and older do not), so the newest
 # release that has it is tracked, not /releases/latest. The checksum is the
