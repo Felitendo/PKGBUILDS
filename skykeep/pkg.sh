@@ -13,11 +13,11 @@ UPSTREAM_REPO="YashwanthKamireddi/Skykeep"
 
 # Installed in CI (pacman) before the makepkg test build: the makedepends plus
 # the libraries the build links against.
-BUILD_DEPS=(rust nodejs npm pkgconf clang webkit2gtk-4.1 gtk3 libsoup3 libheif
-            gstreamer gst-plugins-base-libs libpipewire)
+BUILD_DEPS=(rust nodejs npm pkgconf webkit2gtk-4.1 gtk3 libsoup3 libheif
+            gstreamer gst-plugins-base-libs)
 
 # depends of upstream's packaging/arch/PKGBUILD, sorted
-UPSTREAM_DEPENDS="gst-libav gst-plugins-base gst-plugins-base-libs gst-plugins-good gstreamer gtk3 libheif libpipewire libsecret webkit2gtk-4.1"
+UPSTREAM_DEPENDS="gst-libav gst-plugins-base gst-plugins-base-libs gst-plugins-good gstreamer gtk3 libheif libsecret webkit2gtk-4.1"
 
 latest_version() {
   gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//'

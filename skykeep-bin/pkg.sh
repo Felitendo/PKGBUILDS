@@ -10,7 +10,7 @@
 UPSTREAM_REPO="YashwanthKamireddi/Skykeep"
 
 # depends of upstream's packaging/arch/PKGBUILD, sorted
-UPSTREAM_DEPENDS="gst-libav gst-plugins-base gst-plugins-base-libs gst-plugins-good gstreamer gtk3 libheif libpipewire libsecret webkit2gtk-4.1"
+UPSTREAM_DEPENDS="gst-libav gst-plugins-base gst-plugins-base-libs gst-plugins-good gstreamer gtk3 libheif libsecret webkit2gtk-4.1"
 
 latest_version() {
   gh api "repos/$UPSTREAM_REPO/releases/latest" --jq '.tag_name' | sed 's/^v//'
