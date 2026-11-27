@@ -2,7 +2,7 @@ pkgbase = anker-launcher-bin
 	pkgdesc = Desktop client for AnkerGames (upstream AppImage)
 	pkgver = 0.1.33
 	pkgrel = 1
-	url = https://github.com/zororver/anker-launcher
+	url = https://ankergames.net/launcher
 	arch = x86_64
 	license = LicenseRef-proprietary
 	depends = gcc-libs
@@ -18,7 +18,7 @@ pkgbase = anker-launcher-bin
 	noextract = anker-launcher-bin-0.1.33.AppImage
 	options = !strip
 	options = !debug
-	source = anker-launcher-bin-0.1.33.AppImage::https://github.com/zororver/anker-launcher/releases/download/v0.1.33/AnkerLauncher-0.1.33-x86_64.AppImage
+	source = anker-launcher-bin-0.1.33.AppImage::https://ankergames.net/api/v1/launcher-files/v0.1.33/AnkerLauncher-0.1.33-x86_64.AppImage
 	sha256sums = 4d4650725bc46c70ee4b2b2a67b39c2cac7a7ef88d1b1895663a2413b38cdc43
 
 pkgname = anker-launcher-bin

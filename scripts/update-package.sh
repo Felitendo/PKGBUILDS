@@ -54,8 +54,7 @@ if [[ "$rc" -eq 75 ]]; then
   echo "::warning::$pkg: upstream has no current release to track right now -" \
        "leaving the version alone, the next run tries again."
   ver="$oldver"
-fi
-if [[ -z "$ver" || "$ver" == "null" ]]; then
+elif [[ "$rc" -ne 0 || -z "$ver" || "$ver" == "null" ]]; then
   echo "::error::$pkg: could not determine the latest upstream version"
   exit 1
 fi
