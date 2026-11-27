@@ -1,0 +1,44 @@
+name: Update votes
+
+# Refreshes the AUR votes in the package table of README.md and sorts the
+# table by them. A push that changes the README runs it too, so a new row
+# moves to its place right away.
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - README.md
+      - scripts/update-votes.py
+
+concurrency:
+  group: votes
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  votes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Update the votes
+        run: python3 scripts/update-votes.py
+
+      - name: Commit
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "readme: update votes [skip ci]"
+          # the update workflow pushes package commits at the same time
+          for i in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then exit 0; fi
+            sleep 10
+          done
+          exit 1
